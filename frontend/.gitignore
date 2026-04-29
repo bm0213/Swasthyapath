@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables (SENSITIVE - never commit!)
+.env
+
+# Build output
+dist/
+build/
+
+# Vite cache
+.vite/

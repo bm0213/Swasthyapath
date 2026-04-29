@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment variables (SENSITIVE - never commit!)
+.env
+
+# Data file (if it contains sensitive/generated data)
+data.json
