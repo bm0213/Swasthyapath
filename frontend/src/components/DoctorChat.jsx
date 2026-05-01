@@ -1,4 +1,5 @@
 import React from "react";
+import VideoCall from "./VideoCall";
 import { getSocket, generateRoomId, disconnectSocket } from "../utils/socket";
 
 export default function DoctorChat({ lang, triageResult, forceOpen, onClose }) {
@@ -14,6 +15,9 @@ export default function DoctorChat({ lang, triageResult, forceOpen, onClose }) {
   const [typingUser, setTypingUser] = React.useState("");
   const [isConnected, setIsConnected] = React.useState(false);
   const [copied, setCopied] = React.useState(false);
+  const [inCall, setInCall] = React.useState(false);
+const [incomingCall, setIncomingCall] = React.useState(false);
+const [callerName, setCallerName] = React.useState("");
   const messagesEndRef = React.useRef(null);
   const typingTimeoutRef = React.useRef(null);
   const socketRef = React.useRef(null);
@@ -125,6 +129,17 @@ export default function DoctorChat({ lang, triageResult, forceOpen, onClose }) {
     });
     socket.on("user_typing", ({ userName: uname, isTyping }) => {
       setTypingUser(isTyping ? uname : "");
+    });
+    socket.on("incoming_call", ({ from }) => {
+      setCallerName(from);
+      setIncomingCall(true);
+    });
+    socket.on("call_accepted", () => {
+      setInCall(true);
+      setIncomingCall(false);
+    });
+    socket.on("call_declined", () => {
+      alert("Doctor declined the call.");
     });
   }
 
@@ -414,6 +429,19 @@ export default function DoctorChat({ lang, triageResult, forceOpen, onClose }) {
                   fontSize: "14px", outline: "none",
                 }}
               />
+              <button onClick={() => {
+                socketRef.current?.emit("call_request", { roomId, userName });
+                setInCall(true);
+              }}
+              style={{
+                width: "42px", height: "42px", borderRadius: "50%",
+                background: "#185FA5", border: "none",
+                color: "white", fontSize: "18px", cursor: "pointer",
+                display: role === "patient" ? "flex" : "none",
+                alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>
+                📹
+              </button>
               <button onClick={handleSend} disabled={!newMessage.trim()} style={{
                 width: "42px", height: "42px", borderRadius: "50%",
                 background: newMessage.trim() ? "#185FA5" : "var(--border)",
@@ -427,6 +455,56 @@ export default function DoctorChat({ lang, triageResult, forceOpen, onClose }) {
           </>
         )}
       </div>
+
+      {/* Incoming call notification for doctor */}
+      {incomingCall && role === "doctor" && (
+        <div style={{
+          position: "fixed", top: "20px", left: "50%", transform: "translateX(-50%)",
+          background: "white", borderRadius: "16px", padding: "16px 20px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.2)", zIndex: 600,
+          display: "flex", flexDirection: "column", alignItems: "center", gap: "12px",
+          minWidth: "260px",
+        }}>
+          <div style={{ fontSize: "15px", fontWeight: "500" }}>
+            📞 {callerName} is requesting a video call
+          </div>
+          <div style={{ display: "flex", gap: "12px" }}>
+            <button onClick={() => {
+              socketRef.current?.emit("call_accepted", { roomId, userName });
+              setInCall(true);
+              setIncomingCall(false);
+            }} style={{
+              padding: "8px 20px", background: "#22c55e",
+              color: "white", border: "none", borderRadius: "8px",
+              fontSize: "14px", cursor: "pointer",
+            }}>
+              ✅ Accept
+            </button>
+            <button onClick={() => {
+              socketRef.current?.emit("call_declined", { roomId });
+              setIncomingCall(false);
+            }} style={{
+              padding: "8px 20px", background: "#e53e3e",
+              color: "white", border: "none", borderRadius: "8px",
+              fontSize: "14px", cursor: "pointer",
+            }}>
+              ❌ Decline
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Video Call Screen */}
+      {inCall && (
+        <VideoCall
+          socket={socketRef.current}
+          roomId={roomId}
+          userName={userName}
+          role={role}
+          onEnd={() => setInCall(false)}
+        />
+      )}
+
     </div>
   );
 }

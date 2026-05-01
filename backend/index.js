@@ -73,6 +73,35 @@ io.on("connection", (socket) => {
     socket.to(roomId).emit("user_typing", { userName, isTyping });
   });
 
+  // Video call signaling
+  socket.on("call_request", ({ roomId, userName }) => {
+    socket.to(roomId).emit("incoming_call", { from: userName });
+  });
+
+  socket.on("call_accepted", ({ roomId, userName }) => {
+    socket.to(roomId).emit("call_accepted", { by: userName });
+  });
+
+  socket.on("call_declined", ({ roomId }) => {
+    socket.to(roomId).emit("call_declined");
+  });
+
+  socket.on("call_ended", ({ roomId }) => {
+    socket.to(roomId).emit("call_ended");
+  });
+
+  socket.on("webrtc_offer", ({ roomId, offer }) => {
+    socket.to(roomId).emit("webrtc_offer", { offer });
+  });
+
+  socket.on("webrtc_answer", ({ roomId, answer }) => {
+    socket.to(roomId).emit("webrtc_answer", { answer });
+  });
+
+  socket.on("webrtc_ice", ({ roomId, candidate }) => {
+    socket.to(roomId).emit("webrtc_ice", { candidate });
+  });
+  
   socket.on("disconnect", () => {
     const { roomId, userName, role } = socket.data;
     if (roomId && rooms.has(roomId)) {
