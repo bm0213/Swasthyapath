@@ -1,19 +1,34 @@
-import { Low } from "lowdb";
-import { JSONFile } from "lowdb/node";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import mongoose from "mongoose";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const file = join(__dirname, "data.json");
-
-const defaultData = {
-  requests: [],
-  totalCount: 0,
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("MongoDB connected ✓");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
 };
 
-const adapter = new JSONFile(file);
-const db = new Low(adapter, defaultData);
+// Triage Request Schema
+const requestSchema = new mongoose.Schema({
+  id: Number,
+  symptoms: String,
+  severity: String,
+  facilities: [String],
+  location: {
+    lat: Number,
+    lng: Number,
+  },
+  timestamp: String,
+});
 
-await db.read();
+// Counter Schema (for totalCount)
+const counterSchema = new mongoose.Schema({
+  name: String,
+  value: Number,
+});
 
-export default db;
+export const Request = mongoose.model("Request", requestSchema);
+export const Counter = mongoose.model("Counter", counterSchema);
+export default connectDB;

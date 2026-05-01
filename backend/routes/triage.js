@@ -1,6 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
-import db from "../db.js";
+import { Request, Counter } from "../db.js";
 
 dotenv.config();
 
@@ -61,10 +61,15 @@ router.post("/", async (req, res) => {
   const result = getMockTriage(symptoms);
 
   // Log to database
-  try {
-    await db.read();
-    db.data.totalCount += 1;
-    db.data.requests.push({
+ try {
+    let counter = await Counter.findOne({ name: "total" });
+    if (!counter) {
+      counter = new Counter({ name: "total", value: 0 });
+    }
+    counter.value += 1;
+    await counter.save();
+
+    await Request.create({
       id: Date.now(),
       symptoms: symptoms.slice(0, 200),
       severity: result.severity,
@@ -73,13 +78,7 @@ router.post("/", async (req, res) => {
       timestamp: new Date().toISOString(),
     });
 
-    // Keep last 500 requests only
-    if (db.data.requests.length > 500) {
-      db.data.requests = db.data.requests.slice(-500);
-    }
-
-    await db.write();
-    console.log("Triage logged. Total:", db.data.totalCount);
+    console.log("Triage logged. Total:", counter.value);
   } catch (err) {
     console.error("DB write error:", err);
   }

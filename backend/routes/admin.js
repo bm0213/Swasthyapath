@@ -1,5 +1,5 @@
 import express from "express";
-import db from "../db.js";
+import { Request, Counter } from "../db.js";
 
 const router = express.Router();
 
@@ -15,8 +15,9 @@ function auth(req, res, next) {
 }
 
 router.get("/stats", auth, async (req, res) => {
-  await db.read();
-  const requests = db.data.requests;
+ const requests = await Request.find();
+  const counter = await Counter.findOne({ name: "total" });
+  const totalCount = counter ? counter.value : 0;
 
   // Today's count
   const today = new Date().toDateString();
@@ -97,7 +98,7 @@ router.get("/stats", auth, async (req, res) => {
     }));
 
   res.json({
-    totalCount: db.data.totalCount,
+    totalCount,
     todayCount,
     severityBreakdown,
     topSymptoms,

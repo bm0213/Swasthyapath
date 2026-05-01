@@ -3,10 +3,11 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import triageRoute from "./routes/triage.js";
+import triageRoute from "./db.js";
 import adminRoute from "./routes/admin.js";
 
 dotenv.config();
+await connectDB();
 
 console.log("Starting server...");
 console.log("API key found:", process.env.ANTHROPIC_API_KEY ? "YES ✓" : "NO ✗ — check your .env file");
