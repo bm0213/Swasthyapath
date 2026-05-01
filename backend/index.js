@@ -3,7 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import triageRoute from "./db.js";
+import connectDB from "./db.js";
+import triageRoute from "./routes/triage.js";
 import adminRoute from "./routes/admin.js";
 
 dotenv.config();
