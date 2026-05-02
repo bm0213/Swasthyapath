@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import connectDB from "./db.js";
 import triageRoute from "./routes/triage.js";
+import hospitalsRoute from "./routes/hospitals.js";
 import adminRoute from "./routes/admin.js";
 
 dotenv.config();
@@ -27,6 +28,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/triage", triageRoute);
+app.use("/api/hospitals", hospitalsRoute);
 app.use("/api/admin", adminRoute);
 
 // Store active rooms
