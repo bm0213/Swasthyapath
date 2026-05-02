@@ -2,7 +2,7 @@ import React from "react";
 import VideoCall from "./VideoCall";
 import { getSocket, generateRoomId, disconnectSocket } from "../utils/socket";
 
-export default function DoctorChat({ lang, triageResult, forceOpen, onClose }) {
+export default function DoctorChat({ lang, triageResult, forceOpen, onClose, onAmbulanceLocation, onPatientLocation }) {
   const [showChat, setShowChat] = React.useState(false);
   const [step, setStep] = React.useState("start");
   const [roomId, setRoomId] = React.useState("");
@@ -108,6 +108,14 @@ const [callerName, setCallerName] = React.useState("");
     socket.on("connect", () => {
       setIsConnected(true);
       socket.emit("join_room", { roomId: rid, userName: uname, role: urole });
+      // If ambulance, start sharing location
+      if (urole === "ambulance") {
+        startSharingLocation(rid, socket, "ambulance");
+      }
+      // If patient, share location too
+      if (urole === "patient") {
+        startSharingLocation(rid, socket, "patient");
+      } 
       if (urole === "patient" && triageResult) {
         setTimeout(() => {
           const infoMsg = `📋 *Triage Info*\nSeverity: ${triageResult.severityLabel}\nSummary: ${triageResult.summary}\nFacilities: ${triageResult.facilities?.join(", ")}\nDo now: ${triageResult.doNow}`;
@@ -130,6 +138,13 @@ const [callerName, setCallerName] = React.useState("");
     socket.on("user_typing", ({ userName: uname, isTyping }) => {
       setTypingUser(isTyping ? uname : "");
     });
+    socket.on("ambulance_location_update", ({ lat, lng }) => {
+      onAmbulanceLocation?.({ lat, lng });
+    });
+
+    socket.on("patient_location_update", ({ lat, lng }) => {
+      onPatientLocation?.({ lat, lng });
+    });
     socket.on("incoming_call", ({ from }) => {
       setCallerName(from);
       setIncomingCall(true);
@@ -142,7 +157,23 @@ const [callerName, setCallerName] = React.useState("");
       alert("Doctor declined the call.");
     });
   }
-
+function startSharingLocation(rid, socket, urole) {
+    if (!navigator.geolocation) return;
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const { latitude: lat, longitude: lng } = pos.coords;
+        if (urole === "ambulance") {
+          socket.emit("ambulance_location", { roomId: rid, lat, lng });
+        } else {
+          socket.emit("patient_location", { roomId: rid, lat, lng });
+        }
+      },
+      (err) => console.error("Location error:", err),
+      { enableHighAccuracy: true, maximumAge: 3000 }
+    );
+    // Store watchId to clear later
+    window._locationWatchId = watchId;
+  }
   function handleCreate() {
     if (!userName.trim()) return;
     const rid = generateRoomId();
@@ -184,6 +215,11 @@ const [callerName, setCallerName] = React.useState("");
     disconnectSocket();
     setMessages([]); setStep("start"); setRoomId("");
     setMemberCount(0); setIsConnected(false);
+    // Stop location sharing
+    if (window._locationWatchId) {
+      navigator.geolocation.clearWatch(window._locationWatchId);
+      window._locationWatchId = null;
+    }
   }
 
   function copyRoomId() {
@@ -251,7 +287,7 @@ const [callerName, setCallerName] = React.useState("");
             </p>
 
             <div style={{ display: "flex", gap: "8px", marginBottom: "1.25rem" }}>
-              {["patient", "doctor"].map((r) => (
+{["patient", "doctor", "ambulance"].map((r) => (
                 <button key={r} onClick={() => setRole(r)} style={{
                   flex: 1, padding: "10px",
                   border: role === r ? "1.5px solid #185FA5" : "0.5px solid var(--border)",
@@ -259,7 +295,7 @@ const [callerName, setCallerName] = React.useState("");
                   color: role === r ? "#0C447C" : "var(--text-secondary)",
                   fontSize: "13px", fontWeight: role === r ? "500" : "400", cursor: "pointer",
                 }}>
-                  {r === "patient" ? `🤒 ${str.asPatient}` : `👨‍⚕️ ${str.asDoctor}`}
+                {r === "patient" ? `🤒 ${str.asPatient}` : r === "doctor" ? `👨‍⚕️ ${str.asDoctor}` : `🚑 Ambulance`}
                 </button>
               ))}
             </div>

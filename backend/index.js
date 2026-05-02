@@ -72,7 +72,14 @@ io.on("connection", (socket) => {
   socket.on("typing", ({ roomId, userName, isTyping }) => {
     socket.to(roomId).emit("user_typing", { userName, isTyping });
   });
+// Ambulance tracking
+  socket.on("ambulance_location", ({ roomId, lat, lng }) => {
+    socket.to(roomId).emit("ambulance_location_update", { lat, lng });
+  });
 
+  socket.on("patient_location", ({ roomId, lat, lng }) => {
+    socket.to(roomId).emit("patient_location_update", { lat, lng });
+  });
   // Video call signaling
   socket.on("call_request", ({ roomId, userName }) => {
     socket.to(roomId).emit("incoming_call", { from: userName });

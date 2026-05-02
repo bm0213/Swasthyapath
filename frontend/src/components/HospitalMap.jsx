@@ -28,8 +28,15 @@ const bestIcon = new L.Icon({
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
 });
-
-export default function HospitalMap({ hospitals, userLocation, lang }) {
+// Ambulance icon — yellow
+const ambulanceIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+});
+export default function HospitalMap({ hospitals, userLocation, lang, ambulanceLocation }) {
   if (!userLocation) return null;
 
   const center = [userLocation.lat, userLocation.lng];
@@ -86,8 +93,9 @@ export default function HospitalMap({ hospitals, userLocation, lang }) {
           { color: "#E84040", label: lang === "hi" ? "आपकी लोकेशन" : "Your location" },
           { color: "#0D7A5F", label: lang === "hi" ? "सबसे उपयुक्त" : "Best match" },
           { color: "#378ADD", label: lang === "hi" ? "अन्य अस्पताल" : "Other hospitals" },
-          { color: "#E84040", label: lang === "hi" ? "GPS सटीकता क्षेत्र" : "GPS accuracy zone", dashed: true },
-        ].map((item) => (
+        { color: "#E84040", label: lang === "hi" ? "GPS सटीकता क्षेत्र" : "GPS accuracy zone", dashed: true },
+{ color: "#F6C90E", label: lang === "hi" ? "एम्बुलेंस" : "Ambulance" },
+              ].map((item) => (
           <div key={item.label} style={{
             display: "flex", alignItems: "center",
             gap: "6px", fontSize: "11px",
@@ -236,11 +244,26 @@ export default function HospitalMap({ hospitals, userLocation, lang }) {
                   </div>
                 </Popup>
               </Marker>
-            );
+            ); 
           })}
         </MapContainer>
       </div>
-
+{/* Ambulance marker */}
+          {ambulanceLocation && (
+            <Marker
+              position={[ambulanceLocation.lat, ambulanceLocation.lng]}
+              icon={ambulanceIcon}
+            >
+              <Popup>
+                <div style={{ fontSize: "13px", fontWeight: "600" }}>
+                  🚑 Ambulance
+                </div>
+                <div style={{ fontSize: "11px", color: "#6b6b6b" }}>
+                  Live location
+                </div>
+              </Popup>
+            </Marker>
+          )}
       {/* Footer note */}
       <div style={{
         display: "flex", justifyContent: "space-between",

@@ -79,6 +79,7 @@ export default function App() {
   const [usingCache, setUsingCache] = React.useState(false);
   const [showSOS, setShowSOS] = React.useState(false);
   const [showChat, setShowChat] = React.useState(false);
+  const [ambulanceLocation, setAmbulanceLocation] = React.useState(null);
   const resultRef = React.useRef(null);
   const isOnline = useOnlineStatus();
 
@@ -451,7 +452,7 @@ export default function App() {
                 )}
 
                 {showMap && hospitals.length > 0 && (
-                  <HospitalMap hospitals={hospitals} userLocation={userLocation} lang={lang} />
+                <HospitalMap hospitals={hospitals} userLocation={userLocation} lang={lang} ambulanceLocation={ambulanceLocation} />
                 )}
 
                 {hospitals.length > 0
@@ -503,6 +504,8 @@ export default function App() {
         triageResult={triageResult}
         forceOpen={showChat}
         onClose={() => setShowChat(false)}
+        onAmbulanceLocation={(loc) => setAmbulanceLocation(loc)}
+        onPatientLocation={(loc) => setUserLocation(loc)}
       />
 
       {/* Sticky emergency bar — mobile only */}
