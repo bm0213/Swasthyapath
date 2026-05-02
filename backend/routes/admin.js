@@ -3,16 +3,27 @@ import { Request, Counter } from "../db.js";
 
 const router = express.Router();
 
-// Simple admin key check — change this to something secret
-const ADMIN_KEY = "swasthya-admin-2024";
-
 function auth(req, res, next) {
-  const key = req.headers["x-admin-key"];
-  if (key !== ADMIN_KEY) {
+  const { username, password } = req.headers;
+  if (
+    username !== process.env.ADMIN_USERNAME ||
+    password !== process.env.ADMIN_PASSWORD
+  ) {
     return res.status(401).json({ error: "Unauthorized" });
   }
   next();
 }
+
+router.post("/login", (req, res) => {
+  const { username, password } = req.body;
+  if (
+    username === process.env.ADMIN_USERNAME &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
+    return res.json({ success: true, token: "admin-authenticated" });
+  }
+  return res.status(401).json({ error: "Invalid username or password" });
+});
 
 router.get("/stats", auth, async (req, res) => {
  const requests = await Request.find();

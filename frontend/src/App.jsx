@@ -9,6 +9,8 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import FAB from "./components/FAB";
 import OfflineBanner from "./components/OfflineBanner";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminLogin from "./components/AdminLogin";
+import UserHistory from "./components/UserHistory";
 import Settings from "./pages/Settings";
 import SOSButton from "./components/SOSButton";
 import DoctorChat from "./components/DoctorChat";
@@ -79,6 +81,9 @@ export default function App() {
   const [usingCache, setUsingCache] = React.useState(false);
   const [showSOS, setShowSOS] = React.useState(false);
   const [showChat, setShowChat] = React.useState(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = React.useState(
+    () => sessionStorage.getItem("admin-auth") === "true"
+  );
   const [ambulanceLocation, setAmbulanceLocation] = React.useState(null);
   const resultRef = React.useRef(null);
   const isOnline = useOnlineStatus();
@@ -129,7 +134,22 @@ export default function App() {
       }
 
       const matched = matchHospitals(nearbyHospitals, result.facilities);
+      
       setTriageResult(result);
+
+      // Save to local history
+      const historyItem = {
+        symptoms: symptoms.slice(0, 200),
+        severity: result.severity,
+        summary: result.summary,
+        facilities: result.facilities,
+        timestamp: new Date().toISOString(),
+      };
+      const existing = JSON.parse(localStorage.getItem("swasthya-triage-history") || "[]");
+      existing.push(historyItem);
+      if (existing.length > 20) existing.splice(0, existing.length - 20);
+      localStorage.setItem("swasthya-triage-history", JSON.stringify(existing));
+
       setHospitals(matched);
 
       setTimeout(() => {
@@ -176,9 +196,33 @@ export default function App() {
         <Settings lang={lang} setLang={setLang} onClose={() => setPage("home")} />
       )}
 
-      {page === "admin" && (
+     {page === "admin" && (
         <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
-          <AdminDashboard lang={lang} />
+          {isAdminAuthenticated ? (
+            <>
+              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+                <button
+                  onClick={() => {
+                    sessionStorage.removeItem("admin-auth");
+                    setIsAdminAuthenticated(false);
+                  }}
+                  style={{
+                    padding: "7px 16px",
+                    background: "transparent",
+                    color: "var(--alert)",
+                    border: "1px solid var(--alert)40",
+                    borderRadius: "8px", fontSize: "13px",
+                    fontWeight: "600", cursor: "pointer",
+                  }}
+                >
+                  🔓 Sign out
+                </button>
+              </div>
+              <AdminDashboard lang={lang} isAdmin={true} />
+            </>
+          ) : (
+            <AdminLogin onSuccess={() => setIsAdminAuthenticated(true)} />
+          )}
         </div>
       )}
 
@@ -482,6 +526,10 @@ export default function App() {
         </div>
       )}
 
+{page === "history" && (
+        <UserHistory />
+      )}
+     
       {/* FAB with callbacks */}
       <FAB
         lang={lang}

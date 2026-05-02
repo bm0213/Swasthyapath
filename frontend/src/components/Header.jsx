@@ -61,18 +61,19 @@ export default function Header({ lang, setLang, currentPage, setPage }) {
               SwasthyaPath
             </div>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.04em" }}>
-              {currentPage === "admin" ? "Admin Dashboard" : "Emergency Response System"}
+          {currentPage === "admin" ? "Admin Dashboard" : currentPage === "history" ? "My Triage History" : "Emergency Response System"}   
             </div>
           </div>
         </div>
 
         {/* Center nav */}
         <div style={{ display: "flex", gap: "2px" }}>
-          {[
+    {[
             { id: "home", label: "Triage" },
+            { id: "history", label: "My History" },
             { id: "admin", label: "Dashboard" },
             { id: "settings", label: "Settings" },  
-          ].map((item) => (
+          ].map((item) => (       
             <button key={item.id} onClick={() => setPage(item.id)} style={{
               padding: "6px 14px",
               background: currentPage === item.id ? "rgba(255,255,255,0.12)" : "transparent",
