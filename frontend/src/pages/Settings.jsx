@@ -357,38 +357,7 @@ export default function Settings({ lang, setLang, onClose }) {
           </div>
         ))}
       </div>
-
-      {/* App info */}
-      <SectionTitle>About</SectionTitle>
-      <div style={{
-        background: "var(--bg-card)",
-        border: "1px solid var(--border)",
-        borderRadius: "10px", padding: "0 14px",
-        boxShadow: "var(--shadow-sm)",
-        marginBottom: "16px",
-      }}>
-        {[
-          { icon: "📱", title: "App version", value: "1.0.0" },
-          { icon: "🗺️", title: "Map data", value: "OpenStreetMap + Google Places" },
-          { icon: "🤖", title: "AI engine", value: "Claude (Anthropic)" },
-          { icon: "🔒", title: "Data storage", value: "Local only — never uploaded" },
-        ].map((item, i, arr) => (
-          <div key={item.title} style={{
-            borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none",
-          }}>
-            <SettingRow icon={item.icon} title={item.title}>
-              <span style={{
-                fontSize: "12px", fontWeight: "600",
-                color: "var(--text-tertiary)",
-                fontFamily: "'DM Mono', monospace",
-              }}>
-                {item.value}
-              </span>
-            </SettingRow>
-          </div>
-        ))}
-      </div>
-
+      
       {/* Action buttons */}
       <div style={{ display: "flex", gap: "10px" }}>
         <button
