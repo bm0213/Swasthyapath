@@ -1,7 +1,7 @@
 import React from "react";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
-const ADMIN_KEY = "swasthya-admin-2024";
+
 
 function StatCard({ label, value, sub, color }) {
   return (
@@ -72,8 +72,11 @@ export default function AdminDashboard() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${BACKEND_URL}/api/admin/stats`, {
-        headers: { "x-admin-key": ADMIN_KEY },
+     const res = await fetch(`${BACKEND_URL}/api/admin/stats`, {
+        headers: {
+          "username": "Bibhradip_0213",
+          "password": "Swasthyapath@2026",
+        },
       });
       if (!res.ok) throw new Error("Unauthorized or server error");
       const data = await res.json();
