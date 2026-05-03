@@ -9,6 +9,7 @@ import LoadingSpinner from "./components/LoadingSpinner";
 import FAB from "./components/FAB";
 import OfflineBanner from "./components/OfflineBanner";
 import AdminDashboard from "./pages/AdminDashboard";
+import FirstAid from "./pages/FirstAid";
 import AdminLogin from "./components/AdminLogin";
 import UserHistory from "./components/UserHistory";
 import Settings from "./pages/Settings";
@@ -190,7 +191,7 @@ export default function App() {
 
   return (
     <>
-      <Header lang={lang} setLang={setLang} currentPage={page} setPage={setPage} />
+      <Header lang={lang} setLang={setLang} currentPage={page} setPage={setPage} isAdmin={isAdminAuthenticated} />
 
       {page === "settings" && (
         <Settings lang={lang} setLang={setLang} onClose={() => setPage("home")} />
@@ -529,6 +530,10 @@ export default function App() {
 {page === "history" && (
         <UserHistory />
       )}
+
+    {page === "firstaid" && (
+        <FirstAid lang={lang} />
+      )}  
      
       {/* FAB with callbacks */}
       <FAB

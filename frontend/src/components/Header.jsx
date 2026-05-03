@@ -23,7 +23,7 @@ function useDarkMode() {
   return [isDark, setIsDark];
 }
 
-export default function Header({ lang, setLang, currentPage, setPage }) {
+export default function Header({ lang, setLang, currentPage, setPage, isAdmin }) {
   const s = strings[lang];
   const [isDark, setIsDark] = useDarkMode();
   const [showLangMenu, setShowLangMenu] = React.useState(false);
@@ -44,7 +44,7 @@ export default function Header({ lang, setLang, currentPage, setPage }) {
       }}>
 
         {/* Logo */}
-        <div onClick={() => setPage("home")} style={{
+        <div onClick={() => setPage("home")} onDoubleClick={() => setPage("admin")} style={{
           display: "flex", alignItems: "center", gap: "10px", cursor: "pointer",
         }}>
           <div style={{
@@ -61,19 +61,20 @@ export default function Header({ lang, setLang, currentPage, setPage }) {
               SwasthyaPath
             </div>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.04em" }}>
-          {currentPage === "admin" ? "Admin Dashboard" : currentPage === "history" ? "My Triage History" : "Emergency Response System"}   
+   {currentPage === "admin" ? "Admin Dashboard" : currentPage === "history" ? "My Triage History" : currentPage === "firstaid" ? "First Aid Guide" : "Emergency Response System"}      
             </div>
           </div>
         </div>
 
         {/* Center nav */}
         <div style={{ display: "flex", gap: "2px" }}>
-    {[
+       {[
             { id: "home", label: "Triage" },
+            { id: "firstaid", label: "First Aid" },
             { id: "history", label: "My History" },
-            { id: "admin", label: "Dashboard" },
+            ...(isAdmin ? [{ id: "admin", label: "Dashboard" }] : []),
             { id: "settings", label: "Settings" },  
-          ].map((item) => (       
+          ].map((item) => (
             <button key={item.id} onClick={() => setPage(item.id)} style={{
               padding: "6px 14px",
               background: currentPage === item.id ? "rgba(255,255,255,0.12)" : "transparent",
