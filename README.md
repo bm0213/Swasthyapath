@@ -24,9 +24,11 @@ Describe symptoms in any language → Get instant AI triage → Find the nearest
 - 🚑 **Ambulance Live Tracking** — Patient and ambulance share live locations visible on the map in real time
 - 💬 **Doctor Chat** — Real-time chat between patient and volunteer doctor via Socket.io rooms
 - 📹 **Video Call** — WebRTC-powered video consultation between patient and doctor
-- 📴 **Offline Mode** — Cached hospital data works without internet connection
-- 🌍 **Multi-language** — Supports English, Hindi, and more
-- 📊 **Admin Dashboard** — Live stats, severity breakdown, symptom trends, and recent activity
+- 🩹 **First Aid Guide** — Step-by-step offline first aid for 10 emergencies (Heart Attack, Snake Bite, Burns, Drowning, Choking, Fracture, Seizure, Bleeding, Unconscious, Road Accident)
+- 📋 **My Triage History** — Users can view their past triage records stored locally
+- 🔐 **Admin Dashboard** — Protected admin login with full stats, severity breakdown, symptom trends and recent activity
+- 📴 **Offline Mode** — Cached hospital data and First Aid Guide work without internet connection
+- 🌍 **Multi-language** — Supports English, Hindi, Tamil, Telugu, Bengali, Marathi
 - 🆘 **SOS Button** — One-tap emergency call with location sharing
 - 📱 **PWA Ready** — Installable on mobile devices
 
@@ -93,6 +95,8 @@ Create a `.env` file inside `backend/`:
 ANTHROPIC_API_KEY=your_anthropic_api_key
 PORT=4000
 MONGODB_URI=your_mongodb_atlas_connection_string
+ADMIN_USERNAME=your_admin_username
+ADMIN_PASSWORD=your_admin_password
 ```
 
 Start the backend:
@@ -130,7 +134,8 @@ Swasthyapath/
 ├── backend/
 │   ├── routes/
 │   │   ├── triage.js        # AI triage endpoint
-│   │   └── admin.js         # Admin stats endpoint
+│   │   ├── admin.js         # Admin stats + login endpoint
+│   │   └── hospitals.js     # Hospital proxy endpoint
 │   ├── db.js                # MongoDB connection + schemas
 │   ├── index.js             # Express + Socket.io server
 │   └── package.json
@@ -138,6 +143,8 @@ Swasthyapath/
 └── frontend/
     └── src/
         ├── components/
+        │   ├── AdminLogin.jsx      # Admin login page
+        │   ├── UserHistory.jsx     # User triage history
         │   ├── DoctorChat.jsx      # Real-time chat + video call
         │   ├── VideoCall.jsx       # WebRTC video call
         │   ├── HospitalMap.jsx     # Leaflet map + ambulance tracking
@@ -147,12 +154,14 @@ Swasthyapath/
         │   ├── SOSButton.jsx       # Emergency SOS
         │   └── ...
         ├── pages/
-        │   ├── AdminDashboard.jsx  # Admin stats dashboard
+        │   ├── AdminDashboard.jsx  # Admin stats dashboard (protected)
+        │   ├── FirstAid.jsx        # Offline first aid guide
         │   └── Settings.jsx
         ├── utils/
         │   ├── triage.js           # Claude AI API call
         │   ├── socket.js           # Socket.io client
         │   ├── location.js         # GPS utilities
+        │   ├── fetchHospitals.js   # Hospital fetch via backend proxy
         │   └── ...
         └── App.jsx                 # Main app component
 ```
@@ -164,7 +173,9 @@ Swasthyapath/
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/api/triage` | Submit symptoms for AI triage |
+| POST | `/api/admin/login` | Admin login |
 | GET | `/api/admin/stats` | Get admin dashboard stats |
+| GET | `/api/hospitals/nearby` | Fetch nearby hospitals via proxy |
 
 ### Triage Request
 ```json
@@ -196,6 +207,9 @@ Swasthyapath/
 | `ambulance_location` | Client → Server | Share ambulance GPS |
 | `patient_location` | Client → Server | Share patient GPS |
 | `call_request` | Client → Server | Request video call |
+| `call_accepted` | Client → Server | Accept video call |
+| `call_declined` | Client → Server | Decline video call |
+| `call_ended` | Client → Server | End video call |
 | `webrtc_offer/answer/ice` | Client → Server | WebRTC signaling |
 
 ---
