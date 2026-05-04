@@ -61,7 +61,7 @@ export default function Header({ lang, setLang, currentPage, setPage, isAdmin })
               SwasthyaPath
             </div>
             <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.45)", letterSpacing: "0.04em" }}>
-   {currentPage === "admin" ? "Admin Dashboard" : currentPage === "history" ? "My Triage History" : currentPage === "firstaid" ? "First Aid Guide" : "Emergency Response System"}      
+   {currentPage === "admin" ? "Admin Dashboard" : currentPage === "history" ? "My Triage History" :  currentPage === "firstaid" ? "First Aid Guide" : currentPage === "medicalid" ? "Medical ID" : "Emergency Response System"}   
             </div>
           </div>
         </div>
@@ -71,6 +71,7 @@ export default function Header({ lang, setLang, currentPage, setPage, isAdmin })
        {[
             { id: "home", label: "Triage" },
             { id: "firstaid", label: "First Aid" },
+            { id: "medicalid", label: "Medical ID" },
             { id: "history", label: "My History" },
             ...(isAdmin ? [{ id: "admin", label: "Dashboard" }] : []),
             { id: "settings", label: "Settings" },  

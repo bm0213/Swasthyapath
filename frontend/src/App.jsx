@@ -10,6 +10,7 @@ import FAB from "./components/FAB";
 import OfflineBanner from "./components/OfflineBanner";
 import AdminDashboard from "./pages/AdminDashboard";
 import FirstAid from "./pages/FirstAid";
+import MedicalID from "./pages/MedicalID";
 import AdminLogin from "./components/AdminLogin";
 import UserHistory from "./components/UserHistory";
 import Settings from "./pages/Settings";
@@ -533,6 +534,10 @@ export default function App() {
 
     {page === "firstaid" && (
         <FirstAid lang={lang} />
+      )}  
+
+    {page === "medicalid" && (
+        <MedicalID />
       )}  
      
       {/* FAB with callbacks */}
