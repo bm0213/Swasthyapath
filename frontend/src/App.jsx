@@ -529,16 +529,22 @@ export default function App() {
       )}
 
 {page === "history" && (
-        <UserHistory />
+        <div style={{ maxWidth: "1140px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+          <UserHistory />
+        </div>
       )}
 
-    {page === "firstaid" && (
-        <FirstAid lang={lang} />
-      )}  
+      {page === "firstaid" && (
+        <div style={{ maxWidth: "1140px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+          <FirstAid lang={lang} />
+        </div>
+      )}
 
-    {page === "medicalid" && (
-        <MedicalID />
-      )}  
+      {page === "medicalid" && (
+        <div style={{ maxWidth: "1140px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+          <MedicalID />
+        </div>
+      )}
      
       {/* FAB with callbacks */}
       <FAB
