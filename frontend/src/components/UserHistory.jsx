@@ -17,7 +17,7 @@ export default function UserHistory() {
   if (history.length === 0) {
     return (
       <div style={{
-        maxWidth: "680px", margin: "0 auto",
+        maxWidth: "900px", margin: "0 auto",
         padding: "1.5rem 1.25rem 4rem",
       }}>
         <div style={{
@@ -55,7 +55,7 @@ export default function UserHistory() {
 
   return (
     <div style={{
-      maxWidth: "680px", margin: "0 auto",
+      maxWidth: "900px", margin: "0 auto",
       padding: "1.5rem 1.25rem 4rem",
     }}>
       <div style={{

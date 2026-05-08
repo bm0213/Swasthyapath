@@ -122,7 +122,7 @@ export default function MedicalID() {
 
   return (
     <div style={{
-      maxWidth: "680px", margin: "0 auto",
+      maxWidth: "900px", margin: "0 auto",
       padding: "1.5rem 1.25rem 4rem",
     }}>
       {/* Header */}
