@@ -5,8 +5,6 @@ export default function TriageResult({ result, lang }) {
   const s = strings[lang] || strings["en"];
   const [isSpeaking, setIsSpeaking] = React.useState(false);
   const [isSupported] = React.useState(() => "speechSynthesis" in window);
-
-  // Detect dark mode reactively
   const [isDark, setIsDark] = React.useState(
     () => document.documentElement.getAttribute("data-theme") === "dark"
   );
@@ -19,44 +17,42 @@ export default function TriageResult({ result, lang }) {
     return () => observer.disconnect();
   }, []);
 
-  // Stop speech when result changes
   React.useEffect(() => {
     return () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); };
   }, [result]);
 
   const severityConfig = {
     critical: {
-      bg: isDark ? "#1C0A0A" : "#FEF2F2",
-      borderColor: isDark ? "#C0392B" : "#EF4444",
-      accentBg: isDark ? "#C0392B" : "#EF4444",
-      textColor: isDark ? "#FCA5A5" : "#7F1D1D",
-      doNowBg: isDark ? "#1A0808" : "#FFFFFF",
-      tagBg: isDark ? "#2D1010" : "#FFFFFF",
-      subtleText: isDark ? "#F87171" : "#991B1B",
+      bg: isDark ? "#160808" : "#FFFAFA",
+      border: isDark ? "#7F1D1D" : "#FECACA",
+      accent: "#EF4444",
+      accentDark: "#DC2626",
+      text: isDark ? "#FCA5A5" : "#7F1D1D",
+      subtle: isDark ? "#2D1010" : "#FEF2F2",
+      label: "🔴",
     },
     urgent: {
-      bg: isDark ? "#1A1200" : "#FFFBEB",
-      borderColor: isDark ? "#C07C0A" : "#F59E0B",
-      accentBg: isDark ? "#C07C0A" : "#F59E0B",
-      textColor: isDark ? "#FCD34D" : "#78350F",
-      doNowBg: isDark ? "#221800" : "#FFFFFF",
-      tagBg: isDark ? "#2A1E00" : "#FFFFFF",
-      subtleText: isDark ? "#FBBF24" : "#92400E",
+      bg: isDark ? "#141008" : "#FFFDF5",
+      border: isDark ? "#78350F" : "#FDE68A",
+      accent: "#F59E0B",
+      accentDark: "#D97706",
+      text: isDark ? "#FCD34D" : "#78350F",
+      subtle: isDark ? "#231A00" : "#FFFBEB",
+      label: "🟡",
     },
     moderate: {
-      bg: isDark ? "#051510" : "#F0FDF9",
-      borderColor: isDark ? "#0A7A5F" : "#14B8A6",
-      accentBg: isDark ? "#0A7A5F" : "#14B8A6",
-      textColor: isDark ? "#5EEAD4" : "#134E4A",
-      doNowBg: isDark ? "#081C15" : "#FFFFFF",
-      tagBg: isDark ? "#0A2018" : "#FFFFFF",
-      subtleText: isDark ? "#2DD4BF" : "#0F766E",
+      bg: isDark ? "#081410" : "#F8FFFE",
+      border: isDark ? "#064E3B" : "#99F6E4",
+      accent: "#0D9488",
+      accentDark: "#0F766E",
+      text: isDark ? "#5EEAD4" : "#134E4A",
+      subtle: isDark ? "#0A1F18" : "#F0FDF9",
+      label: "🟢",
     },
   };
 
-  const config = severityConfig[result.severity] || severityConfig.moderate;
+  const c = severityConfig[result.severity] || severityConfig.moderate;
 
-  // Language voice map
   const voiceLocaleMap = {
     en: "en-IN", hi: "hi-IN", ta: "ta-IN",
     te: "te-IN", bn: "bn-IN", mr: "mr-IN",
@@ -85,17 +81,12 @@ export default function TriageResult({ result, lang }) {
       setIsSpeaking(false);
       return;
     }
-    const text = buildSpeechText();
-    const utterance = new SpeechSynthesisUtterance(text);
+    const utterance = new SpeechSynthesisUtterance(buildSpeechText());
     utterance.lang = voiceLocaleMap[lang] || "en-IN";
     utterance.rate = 0.88;
-    utterance.pitch = 1;
-    utterance.volume = 1;
     const voices = window.speechSynthesis.getVoices();
-    const matchingVoice = voices.find((v) =>
-      v.lang.startsWith(voiceLocaleMap[lang]?.split("-")[0] || "en")
-    );
-    if (matchingVoice) utterance.voice = matchingVoice;
+    const match = voices.find((v) => v.lang.startsWith(voiceLocaleMap[lang]?.split("-")[0] || "en"));
+    if (match) utterance.voice = match;
     utterance.onstart = () => setIsSpeaking(true);
     utterance.onend = () => setIsSpeaking(false);
     utterance.onerror = () => setIsSpeaking(false);
@@ -105,34 +96,32 @@ export default function TriageResult({ result, lang }) {
 
   return (
     <div className="fade-up" style={{
-      background: config.bg,
-      border: `1.5px solid ${config.borderColor}`,
-      borderLeft: `4px solid ${config.borderColor}`,
-      borderRadius: "12px",
+      background: c.bg,
+      border: `1px solid ${c.border}`,
+      borderRadius: "var(--radius-lg)",
       overflow: "hidden",
       marginBottom: "1rem",
-      boxShadow: isDark
-        ? `0 0 0 1px ${config.borderColor}30, 0 4px 20px ${config.borderColor}20`
-        : "var(--shadow-sm)",
+      boxShadow: `0 0 0 1px ${c.border}40, var(--shadow-md)`,
     }}>
-
-      {/* Severity row */}
+      {/* Header */}
       <div style={{
         display: "flex", alignItems: "center",
         justifyContent: "space-between",
-        padding: "12px 16px",
-        borderBottom: `1px solid ${config.borderColor}30`,
-        background: isDark ? `${config.borderColor}18` : "transparent",
+        padding: "14px 18px",
+        borderBottom: `1px solid ${c.border}`,
+        background: c.subtle,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div style={{
-            width: "8px", height: "8px", borderRadius: "50%",
-            background: config.accentBg,
-            boxShadow: `0 0 6px ${config.accentBg}`,
+            width: "10px", height: "10px", borderRadius: "50%",
+            background: c.accent,
+            boxShadow: `0 0 8px ${c.accent}80`,
+            animation: result.severity === "critical" ? "pulse 1.5s ease infinite" : "none",
           }} />
           <span style={{
-            fontSize: "13px", fontWeight: "700",
-            color: config.textColor, letterSpacing: "0.02em",
+            fontSize: "14px", fontWeight: "700",
+            color: c.text, letterSpacing: "-0.02em",
+            fontFamily: "var(--font-display)",
           }}>
             {result.severityLabel}
           </span>
@@ -140,11 +129,11 @@ export default function TriageResult({ result, lang }) {
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <span style={{
-            fontSize: "11px", fontWeight: "500",
-            color: config.subtleText,
-            background: `${config.accentBg}15`,
-            padding: "2px 10px", borderRadius: "20px",
-            border: `1px solid ${config.borderColor}30`,
+            fontSize: "10px", fontWeight: "600",
+            color: c.text, background: `${c.accent}15`,
+            padding: "3px 10px", borderRadius: "20px",
+            border: `1px solid ${c.border}`,
+            letterSpacing: "0.04em", textTransform: "uppercase",
           }}>
             AI Assessment
           </span>
@@ -152,17 +141,15 @@ export default function TriageResult({ result, lang }) {
           {isSupported && (
             <button
               onClick={toggleSpeech}
-              title={isSpeaking ? "Stop" : "Read aloud"}
               style={{
                 display: "flex", alignItems: "center", gap: "5px",
-                padding: "4px 10px",
-                background: isSpeaking ? config.accentBg : `${config.accentBg}20`,
-                border: `1px solid ${config.borderColor}`,
-                borderRadius: "20px",
-                cursor: "pointer",
-                color: isSpeaking ? "white" : config.textColor,
+                padding: "5px 12px",
+                background: isSpeaking ? c.accent : `${c.accent}15`,
+                border: `1px solid ${c.border}`,
+                borderRadius: "20px", cursor: "pointer",
+                color: isSpeaking ? "white" : c.text,
                 fontSize: "11px", fontWeight: "600",
-                transition: "all 0.15s",
+                transition: "all var(--transition)",
               }}
             >
               {isSpeaking ? (
@@ -174,10 +161,9 @@ export default function TriageResult({ result, lang }) {
                 </>
               ) : (
                 <>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                     <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
                   </svg>
                   {lang === "hi" ? "सुनें" : "Listen"}
                 </>
@@ -187,12 +173,13 @@ export default function TriageResult({ result, lang }) {
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ padding: "14px 16px" }}>
+      {/* Body */}
+      <div style={{ padding: "16px 18px" }}>
         <p style={{
-          fontSize: "14px",
-          color: isDark ? "#E8EDF2" : "var(--text-primary)",
-          lineHeight: "1.65", marginBottom: "12px",
+          fontSize: "14px", lineHeight: "1.7",
+          color: "var(--text-primary)",
+          marginBottom: "14px",
+          letterSpacing: "-0.01em",
         }}>
           {result.summary}
         </p>
@@ -200,30 +187,36 @@ export default function TriageResult({ result, lang }) {
         {/* Do now */}
         {result.doNow && (
           <div style={{
-            display: "flex", gap: "10px",
-            background: config.doNowBg,
-            border: `1px solid ${config.borderColor}40`,
-            borderRadius: "8px",
-            padding: "10px 12px", marginBottom: "12px",
+            display: "flex", gap: "12px",
+            background: "var(--bg-card)",
+            border: `1px solid ${c.border}`,
+            borderLeft: `3px solid ${c.accent}`,
+            borderRadius: "var(--radius-md)",
+            padding: "12px 14px", marginBottom: "14px",
           }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-              stroke={config.accentBg} strokeWidth="2"
-              style={{ flexShrink: 0, marginTop: "1px" }}>
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+            <div style={{
+              width: "28px", height: "28px", borderRadius: "8px",
+              background: `${c.accent}20`,
+              display: "flex", alignItems: "center",
+              justifyContent: "center", flexShrink: 0,
+            }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                stroke={c.accent} strokeWidth="2.5">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
             <div>
               <div style={{
-                fontSize: "11px", fontWeight: "700",
-                color: config.subtleText, marginBottom: "3px",
-                letterSpacing: "0.04em",
+                fontSize: "10px", fontWeight: "700",
+                color: c.text, marginBottom: "4px",
+                letterSpacing: "0.06em", textTransform: "uppercase",
               }}>
                 {s.doNowLabel}
               </div>
               <div style={{
-                fontSize: "13px",
-                color: isDark ? "#CBD5E1" : "var(--text-primary)",
-                lineHeight: "1.55",
+                fontSize: "13px", lineHeight: "1.6",
+                color: "var(--text-primary)",
               }}>
                 {result.doNow}
               </div>
@@ -235,22 +228,23 @@ export default function TriageResult({ result, lang }) {
         <div>
           <div style={{
             fontSize: "10px", fontWeight: "700",
-            color: isDark ? "#64748B" : "var(--text-tertiary)",
-            marginBottom: "6px",
-            textTransform: "uppercase", letterSpacing: "0.08em",
+            color: "var(--text-tertiary)",
+            textTransform: "uppercase", letterSpacing: "0.1em",
+            marginBottom: "8px",
           }}>
             {s.facilitiesNeeded}
           </div>
-          <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
             {result.facilities.map((f) => (
               <span key={f} style={{
-                padding: "3px 10px",
-                background: config.tagBg,
-                border: `1px solid ${config.borderColor}60`,
-                borderRadius: "4px", fontSize: "12px",
-                fontWeight: "700", color: config.textColor,
-                fontFamily: "'DM Mono', monospace",
-                letterSpacing: "0.03em",
+                padding: "4px 12px",
+                background: `${c.accent}12`,
+                border: `1px solid ${c.border}`,
+                borderRadius: "6px",
+                fontSize: "11px", fontWeight: "700",
+                color: c.text,
+                fontFamily: "var(--font-mono)",
+                letterSpacing: "0.04em",
               }}>
                 {f}
               </span>
@@ -262,30 +256,32 @@ export default function TriageResult({ result, lang }) {
       {/* Speaking indicator */}
       {isSpeaking && (
         <div style={{
-          padding: "8px 16px",
-          borderTop: `1px solid ${config.borderColor}30`,
-          background: config.doNowBg,
-          display: "flex", alignItems: "center", gap: "8px",
+          padding: "10px 18px",
+          borderTop: `1px solid ${c.border}`,
+          background: c.subtle,
+          display: "flex", alignItems: "center", gap: "10px",
         }}>
           <div style={{ display: "flex", gap: "3px", alignItems: "center" }}>
             {[1, 2, 3, 4].map((i) => (
               <div key={i} style={{
-                width: "3px", background: config.accentBg, borderRadius: "2px",
+                width: "3px", background: c.accent,
+                borderRadius: "2px",
                 animation: `soundWave 0.8s ease-in-out ${i * 0.1}s infinite alternate`,
-                height: `${8 + i * 3}px`,
+                height: `${6 + i * 3}px`,
               }} />
             ))}
           </div>
           <span style={{
             fontSize: "11px", fontWeight: "600",
-            color: config.textColor, letterSpacing: "0.02em",
+            color: c.text,
           }}>
             {lang === "hi" ? "पढ़ा जा रहा है..." : "Reading aloud..."}
           </span>
           <button onClick={toggleSpeech} style={{
             marginLeft: "auto", fontSize: "11px", fontWeight: "600",
-            color: config.textColor, background: "none",
-            border: "none", cursor: "pointer", textDecoration: "underline",
+            color: c.text, background: "none",
+            border: "none", cursor: "pointer",
+            textDecoration: "underline",
           }}>
             {lang === "hi" ? "रोकें" : "Stop"}
           </button>
