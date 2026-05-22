@@ -26,41 +26,45 @@ import {
   loadCachedHospitals,
 } from "./utils/serviceWorker";
 
-function QuickInfoCard({ icon, label, value, color }) {
+function StatusPill({ icon, label, value, color, onClick }) {
   return (
-    <div style={{
-      background: "var(--bg-card)",
-      border: "1px solid var(--border)",
-      borderRadius: "10px",
-      padding: "12px 14px",
-      display: "flex", alignItems: "center", gap: "12px",
-      boxShadow: "var(--shadow-sm)",
-    }}>
-      <div style={{
-        width: "38px", height: "38px", borderRadius: "8px",
-        background: "var(--bg-secondary)",
+    <div
+      onClick={onClick}
+      style={{
+        background: "var(--bg-card)",
         border: "1px solid var(--border)",
+        borderRadius: "var(--radius-md)",
+        padding: "12px 14px",
+        display: "flex", alignItems: "center", gap: "10px",
+        boxShadow: "var(--shadow-xs)",
+        cursor: onClick ? "pointer" : "default",
+        transition: "all var(--transition)",
+      }}
+      onMouseEnter={(e) => { if (onClick) e.currentTarget.style.boxShadow = "var(--shadow-sm)"; }}
+      onMouseLeave={(e) => { if (onClick) e.currentTarget.style.boxShadow = "var(--shadow-xs)"; }}
+    >
+      <div style={{
+        width: "34px", height: "34px", borderRadius: "9px",
+        background: "var(--bg-secondary)",
         display: "flex", alignItems: "center",
-        justifyContent: "center", fontSize: "16px", flexShrink: 0,
+        justifyContent: "center", fontSize: "15px", flexShrink: 0,
       }}>
         {icon}
       </div>
-      <div style={{ minWidth: 0 }}>
+      <div style={{ minWidth: 0, flex: 1 }}>
         <div style={{
-          fontSize: "10px", fontWeight: "700",
+          fontSize: "9px", fontWeight: "700",
           color: "var(--text-tertiary)",
-          textTransform: "uppercase", letterSpacing: "0.08em",
-          marginBottom: "3px",
+          textTransform: "uppercase", letterSpacing: "0.1em",
+          marginBottom: "2px",
         }}>
           {label}
         </div>
         <div style={{
-          fontSize: "13px", fontWeight: "700",
+          fontSize: "12px", fontWeight: "600",
           color: color || "var(--text-primary)",
-          fontFamily: label === "Location" ? "'DM Sans', sans-serif" : "'DM Mono', monospace",
-          letterSpacing: "0.02em",
           whiteSpace: "nowrap", overflow: "hidden",
-          textOverflow: "ellipsis",
+          textOverflow: "ellipsis", letterSpacing: "-0.01em",
         }}>
           {value}
         </div>
@@ -136,10 +140,8 @@ export default function App() {
       }
 
       const matched = matchHospitals(nearbyHospitals, result.facilities);
-      
       setTriageResult(result);
 
-      // Save to local history
       const historyItem = {
         symptoms: symptoms.slice(0, 200),
         severity: result.severity,
@@ -153,7 +155,6 @@ export default function App() {
       localStorage.setItem("swasthya-triage-history", JSON.stringify(existing));
 
       setHospitals(matched);
-
       setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
@@ -167,39 +168,20 @@ export default function App() {
     }
   }
 
-  const sidebarItems = [
-    {
-      icon: "🌐",
-      label: "Network",
-      value: isOnline ? "Online" : "Offline",
-      color: isOnline ? "var(--teal)" : "var(--alert)",
-    },
-    {
-      icon: "📍",
-      label: "Location",
-      value: userLocation
-        ? (locationName || `${userLocation.lat.toFixed(2)}, ${userLocation.lng.toFixed(2)}`)
-        : "Not detected",
-      color: userLocation ? "var(--teal)" : "var(--text-tertiary)",
-    },
-    {
-      icon: "🏥",
-      label: "Hospitals found",
-      value: hospitals.length > 0 ? `${hospitals.length} nearby` : "Search first",
-      color: hospitals.length > 0 ? "var(--teal)" : "var(--text-tertiary)",
-    },
-  ];
-
   return (
     <>
-      <Header lang={lang} setLang={setLang} currentPage={page} setPage={setPage} isAdmin={isAdminAuthenticated} />
+      <Header
+        lang={lang} setLang={setLang}
+        currentPage={page} setPage={setPage}
+        isAdmin={isAdminAuthenticated}
+      />
 
       {page === "settings" && (
         <Settings lang={lang} setLang={setLang} onClose={() => setPage("home")} />
       )}
 
-     {page === "admin" && (
-        <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+      {page === "admin" && (
+        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
           {isAdminAuthenticated ? (
             <>
               <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
@@ -212,9 +194,9 @@ export default function App() {
                     padding: "7px 16px",
                     background: "transparent",
                     color: "var(--alert)",
-                    border: "1px solid var(--alert)40",
-                    borderRadius: "8px", fontSize: "13px",
-                    fontWeight: "600", cursor: "pointer",
+                    border: "1px solid var(--alert)30",
+                    borderRadius: "var(--radius-sm)",
+                    fontSize: "13px", fontWeight: "600", cursor: "pointer",
                   }}
                 >
                   🔓 Sign out
@@ -230,133 +212,207 @@ export default function App() {
 
       {page === "home" && (
         <div style={{
-          maxWidth: "1140px", margin: "0 auto",
-          padding: "1.5rem 1.25rem 6rem",
+          maxWidth: "100%", margin: "0 auto",
+          padding: "1.5rem 1.5rem 6rem",
           display: "grid",
-          gridTemplateColumns: "230px 1fr",
+          gridTemplateColumns: "240px 1fr",
           gap: "1.5rem",
           alignItems: "start",
         }}>
-
-          <aside style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+          <aside style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 
             <div style={{
-              background: "var(--bg-card)", border: "1px solid var(--border)",
-              borderRadius: "10px", padding: "14px", boxShadow: "var(--shadow-sm)",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-lg)",
+              overflow: "hidden",
+              boxShadow: "var(--shadow-sm)",
             }}>
               <div style={{
-                fontSize: "10px", fontWeight: "700", color: "var(--text-tertiary)",
-                textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "12px",
+                padding: "12px 14px",
+                borderBottom: "1px solid var(--border)",
+                background: "var(--bg-secondary)",
               }}>
-                How to use
-              </div>
-              {[
-                { step: "1", text: "Describe symptoms in your language" },
-                { step: "2", text: "Allow location when prompted" },
-                { step: "3", text: "Get nearest hospital match" },
-                { step: "4", text: "Call or get directions" },
-              ].map((s) => (
-                <div key={s.step} style={{
-                  display: "flex", gap: "10px", alignItems: "flex-start", marginBottom: "8px",
+                <span style={{
+                  fontSize: "10px", fontWeight: "700",
+                  color: "var(--text-tertiary)",
+                  textTransform: "uppercase", letterSpacing: "0.1em",
                 }}>
-                  <div style={{
-                    width: "20px", height: "20px", borderRadius: "50%",
-                    background: "#2563EB", color: "white",
-                    fontSize: "10px", fontWeight: "700",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    flexShrink: 0, marginTop: "1px",
-                  }}>
-                    {s.step}
-                  </div>
-                  <span style={{ fontSize: "11px", color: "var(--text-secondary)", lineHeight: "1.6" }}>
-                    {s.text}
-                  </span>
-                </div>
-              ))}
+                  Status
+                </span>
+              </div>
+              <div style={{ padding: "10px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                <StatusPill
+                  icon="🌐" label="Network"
+                  value={isOnline ? "Online" : "Offline"}
+                  color={isOnline ? "var(--teal)" : "var(--alert)"}
+                />
+                <StatusPill
+                  icon="📍" label="Location"
+                  value={userLocation
+                    ? (locationName || `${userLocation.lat.toFixed(3)}, ${userLocation.lng.toFixed(3)}`)
+                    : "Not detected"}
+                  color={userLocation ? "var(--teal)" : "var(--text-tertiary)"}
+                />
+                <StatusPill
+                  icon="🏥" label="Hospitals"
+                  value={hospitals.length > 0 ? `${hospitals.length} found nearby` : "Search first"}
+                  color={hospitals.length > 0 ? "var(--teal)" : "var(--text-tertiary)"}
+                />
+              </div>
             </div>
 
-            {sidebarItems.map((item) => (
-              <QuickInfoCard
-                key={item.label}
-                icon={item.icon}
-                label={item.label}
-                value={item.value}
-                color={item.color}
-              />
-            ))}
-
             <div style={{
-              background: "var(--bg-card)", border: "1px solid var(--border)",
-              borderRadius: "10px", padding: "14px", boxShadow: "var(--shadow-sm)",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-lg)",
+              overflow: "hidden",
+              boxShadow: "var(--shadow-sm)",
             }}>
               <div style={{
-                fontSize: "10px", fontWeight: "700", color: "var(--text-tertiary)",
-                textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "10px",
+                padding: "12px 14px",
+                borderBottom: "1px solid var(--border)",
+                background: "var(--bg-secondary)",
               }}>
-                Emergency numbers
+                <span style={{
+                  fontSize: "10px", fontWeight: "700",
+                  color: "var(--text-tertiary)",
+                  textTransform: "uppercase", letterSpacing: "0.1em",
+                }}>
+                  How to use
+                </span>
               </div>
-              {[
-                { label: "National Emergency", num: "112", color: "var(--alert)" },
-                { label: "Ambulance", num: "108", color: "var(--teal)" },
-                { label: "Police", num: "100", color: "#2563EB" },
-                { label: "Fire", num: "101", color: "#E07B39" },
-                { label: "Women Helpline", num: "1091", color: "#7C3AED" },
-              ].map((e, i, arr) => (
-                <a key={e.num} href={`tel:${e.num}`} style={{
-                  display: "flex", justifyContent: "space-between",
-                  alignItems: "center", padding: "8px 0",
-                  borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none",
-                  textDecoration: "none", transition: "opacity 0.15s",
-                }}
-                  onMouseEnter={(el) => el.currentTarget.style.opacity = "0.7"}
-                  onMouseLeave={(el) => el.currentTarget.style.opacity = "1"}
-                >
-                  <span style={{ fontSize: "11px", color: "var(--text-secondary)" }}>
-                    {e.label}
-                  </span>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                    <span style={{
-                      fontSize: "16px", fontWeight: "700", color: e.color,
-                      fontFamily: "'Rajdhani', 'DM Mono', monospace",
-                      letterSpacing: "0.1em", lineHeight: 1,
-                    }}>
-                      {e.num}
-                    </span>
+              <div style={{ padding: "12px 14px" }}>
+                {[
+                  { step: "1", text: "Describe symptoms in your language" },
+                  { step: "2", text: "Allow location when prompted" },
+                  { step: "3", text: "Get nearest hospital match" },
+                  { step: "4", text: "Call or get directions" },
+                ].map((s, i, arr) => (
+                  <div key={s.step} style={{
+                    display: "flex", gap: "10px",
+                    alignItems: "flex-start",
+                    paddingBottom: i < arr.length - 1 ? "10px" : "0",
+                    marginBottom: i < arr.length - 1 ? "10px" : "0",
+                    borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none",
+                  }}>
                     <div style={{
                       width: "22px", height: "22px", borderRadius: "50%",
-                      background: e.color + "18",
-                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: "var(--navy)", color: "white",
+                      fontSize: "10px", fontWeight: "700",
+                      display: "flex", alignItems: "center",
+                      justifyContent: "center", flexShrink: 0,
                     }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill={e.color}>
-                        <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-                      </svg>
+                      {s.step}
                     </div>
+                    <span style={{
+                      fontSize: "12px", color: "var(--text-secondary)",
+                      lineHeight: "1.55", paddingTop: "2px",
+                      letterSpacing: "-0.01em",
+                    }}>
+                      {s.text}
+                    </span>
                   </div>
-                </a>
-              ))}
+                ))}
+              </div>
             </div>
 
             <div style={{
-              background: "var(--teal-light)", border: "1px solid var(--teal)",
-              borderLeft: "3px solid var(--teal)", borderRadius: "10px", padding: "12px 14px",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-lg)",
+              overflow: "hidden",
+              boxShadow: "var(--shadow-sm)",
+            }}>
+              <div style={{
+                padding: "12px 14px",
+                borderBottom: "1px solid var(--border)",
+                background: "var(--bg-secondary)",
+              }}>
+                <span style={{
+                  fontSize: "10px", fontWeight: "700",
+                  color: "var(--text-tertiary)",
+                  textTransform: "uppercase", letterSpacing: "0.1em",
+                }}>
+                  Emergency Numbers
+                </span>
+              </div>
+              <div style={{ padding: "4px 14px" }}>
+                {[
+                  { label: "National Emergency", num: "112", color: "#EF4444" },
+                  { label: "Ambulance", num: "108", color: "var(--teal)" },
+                  { label: "Police", num: "100", color: "#3B82F6" },
+                  { label: "Fire", num: "101", color: "#F97316" },
+                  { label: "Women Helpline", num: "1091", color: "#8B5CF6" },
+                ].map((e, i, arr) => (
+                  <a
+                    key={e.num}
+                    href={`tel:${e.num}`}
+                    style={{
+                      display: "flex", justifyContent: "space-between",
+                      alignItems: "center", padding: "10px 0",
+                      borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none",
+                      textDecoration: "none",
+                      transition: "opacity var(--transition)",
+                    }}
+                    onMouseEnter={(el) => el.currentTarget.style.opacity = "0.65"}
+                    onMouseLeave={(el) => el.currentTarget.style.opacity = "1"}
+                  >
+                    <span style={{
+                      fontSize: "12px", color: "var(--text-secondary)",
+                      letterSpacing: "-0.01em",
+                    }}>
+                      {e.label}
+                    </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <span style={{
+                        fontSize: "15px", fontWeight: "700", color: e.color,
+                        fontFamily: "var(--font-mono)",
+                        letterSpacing: "0.05em",
+                      }}>
+                        {e.num}
+                      </span>
+                      <div style={{
+                        width: "20px", height: "20px", borderRadius: "50%",
+                        background: e.color + "15",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill={e.color}>
+                          <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div style={{
+              background: "var(--teal-light)",
+              border: "1px solid var(--teal)30",
+              borderLeft: "3px solid var(--teal)",
+              borderRadius: "var(--radius-md)",
+              padding: "12px 14px",
             }}>
               <div style={{
                 fontSize: "10px", fontWeight: "700", color: "var(--teal)",
-                textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "6px",
+                textTransform: "uppercase", letterSpacing: "0.1em",
+                marginBottom: "6px",
               }}>
-                Quick tip
+                💡 Quick tip
               </div>
-              <p style={{ fontSize: "11px", color: "var(--text-secondary)", lineHeight: "1.65", margin: 0 }}>
+              <p style={{
+                fontSize: "11px", color: "var(--text-secondary)",
+                lineHeight: "1.65", margin: 0, letterSpacing: "-0.01em",
+              }}>
                 Keep the patient calm. Do not give water or food until a doctor advises.
                 Stay on the line with emergency services.
               </p>
             </div>
-
           </aside>
 
           <main>
             <EmergencyBar lang={lang} />
-
             <OfflineBanner
               isOnline={isOnline} lang={lang}
               usingCache={usingCache} hasResults={hospitals.length > 0}
@@ -367,58 +423,75 @@ export default function App() {
                 display: "inline-flex", alignItems: "center", gap: "6px",
                 fontSize: "11px", fontWeight: "600",
                 color: "var(--teal)", background: "var(--teal-light)",
-                border: "1px solid var(--teal)30",
+                border: "1px solid var(--teal)20",
                 padding: "5px 12px", borderRadius: "20px",
-                marginBottom: "12px", letterSpacing: "0.02em",
+                marginBottom: "14px", letterSpacing: "-0.01em",
               }}>
-                <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--teal)" }} />
-                {lang === "hi"
-                  ? "लोकेशन मिल गई"
-                  : locationName
-                    ? `📍 ${locationName}${userLocation.accuracy ? ` · ±${Math.round(userLocation.accuracy)}m` : ""}`
-                    : `GPS · ${userLocation.lat.toFixed(3)}, ${userLocation.lng.toFixed(3)}`}
+                <div style={{
+                  width: "6px", height: "6px", borderRadius: "50%",
+                  background: "var(--teal)",
+                }} />
+                {locationName
+                  ? `📍 ${locationName}${userLocation.accuracy ? ` · ±${Math.round(userLocation.accuracy)}m` : ""}`
+                  : `GPS · ${userLocation.lat.toFixed(3)}, ${userLocation.lng.toFixed(3)}`}
               </div>
             )}
 
             {!triageResult && !isLoading && (
               <div style={{
-                background: "var(--bg-card)", border: "1px solid var(--border)",
-                borderLeft: "4px solid var(--teal)", borderRadius: "12px",
-                padding: "1.25rem 1.5rem", marginBottom: "1.25rem",
-                boxShadow: "var(--shadow-sm)", display: "flex",
-                gap: "16px", alignItems: "flex-start",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-lg)",
+                padding: "1.5rem",
+                marginBottom: "1.25rem",
+                boxShadow: "var(--shadow-sm)",
+                display: "flex", gap: "16px", alignItems: "flex-start",
               }}>
                 <div style={{
-                  width: "44px", height: "44px", borderRadius: "10px",
-                  background: "#2563EB", flexShrink: 0,
+                  width: "48px", height: "48px", borderRadius: "12px",
+                  background: "linear-gradient(135deg, #0B7A5E 0%, #0E9B77 100%)",
+                  flexShrink: 0,
                   display: "flex", alignItems: "center", justifyContent: "center",
+                  boxShadow: "0 2px 8px rgba(11,122,94,0.3)",
                 }}>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                     <path d="M12 4v16M4 12h16" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
                   </svg>
                 </div>
-                <div>
+                <div style={{ flex: 1 }}>
                   <div style={{
-                    fontSize: "15px", fontWeight: "700",
-                    color: "var(--text-primary)", marginBottom: "4px", letterSpacing: "-0.2px",
+                    fontSize: "16px", fontWeight: "700",
+                    color: "var(--text-primary)", marginBottom: "6px",
+                    letterSpacing: "-0.3px",
+                    fontFamily: "var(--font-display)",
                   }}>
                     Emergency Hospital Finder
                   </div>
                   <p style={{
                     fontSize: "13px", color: "var(--text-secondary)",
-                    lineHeight: "1.65", margin: "0 0 10px",
+                    lineHeight: "1.65", margin: "0 0 12px",
+                    letterSpacing: "-0.01em",
                   }}>
-                    Describe the patient's symptoms in any language. AI will assess severity,
-                    identify required facilities and find the nearest hospital in seconds.
+                    Describe symptoms in any language. Claude AI assesses severity,
+                    identifies required facilities and finds the nearest hospital in seconds.
                   </p>
                   <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    {["AI triage", "Real GPS", "Live map", "Offline mode", "6 languages"].map((f) => (
-                      <span key={f} style={{
-                        fontSize: "11px", fontWeight: "600", color: "#2563EB",
-                        background: "var(--navy-light)", border: "1px solid #2563EB20",
-                        padding: "2px 9px", borderRadius: "4px", letterSpacing: "0.02em",
+                    {[
+                      { label: "AI triage", color: "#3B82F6" },
+                      { label: "Real GPS", color: "var(--teal)" },
+                      { label: "Live map", color: "#8B5CF6" },
+                      { label: "Offline mode", color: "#F97316" },
+                      { label: "6 languages", color: "#EC4899" },
+                    ].map((f) => (
+                      <span key={f.label} style={{
+                        fontSize: "11px", fontWeight: "600",
+                        color: f.color,
+                        background: f.color + "12",
+                        border: `1px solid ${f.color}25`,
+                        padding: "3px 10px", borderRadius: "20px",
+                        letterSpacing: "-0.01em",
                       }}>
-                        {f}
+                        {f.label}
                       </span>
                     ))}
                   </div>
@@ -430,13 +503,21 @@ export default function App() {
 
             {isLoading && (
               <div style={{
-                background: "var(--bg-card)", border: "1px solid var(--border)",
-                borderRadius: "12px", padding: "2rem",
-                textAlign: "center", boxShadow: "var(--shadow-sm)", marginTop: "1rem",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius-lg)",
+                padding: "2.5rem 2rem",
+                textAlign: "center",
+                boxShadow: "var(--shadow-sm)",
+                marginTop: "1rem",
               }}>
                 <LoadingSpinner lang={lang} />
                 {loadingMessage && (
-                  <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "8px", fontWeight: "500" }}>
+                  <p style={{
+                    fontSize: "13px", color: "var(--text-secondary)",
+                    marginTop: "10px", fontWeight: "500",
+                    letterSpacing: "-0.01em",
+                  }}>
                     {loadingMessage}
                   </p>
                 )}
@@ -445,28 +526,30 @@ export default function App() {
 
             {error && (
               <div style={{
-                background: "var(--alert-light)", border: "1px solid var(--alert)",
-                borderLeft: "4px solid var(--alert)", borderRadius: "10px",
+                background: "var(--alert-light)",
+                border: "1px solid var(--alert)30",
+                borderLeft: "3px solid var(--alert)",
+                borderRadius: "var(--radius-md)",
                 padding: "1rem 1.25rem", marginTop: "1rem",
-                display: "flex", gap: "10px", alignItems: "flex-start",
+                display: "flex", gap: "12px", alignItems: "flex-start",
               }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--alert)" strokeWidth="2" style={{ flexShrink: 0, marginTop: "1px" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--alert)" strokeWidth="2"
+                  style={{ flexShrink: 0, marginTop: "2px" }}>
                   <circle cx="12" cy="12" r="10"/>
                   <line x1="12" y1="8" x2="12" y2="12"/>
                   <line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
                 <div>
-                  <div style={{ fontSize: "13px", fontWeight: "700", color: "var(--alert)", marginBottom: "3px" }}>
+                  <div style={{
+                    fontSize: "13px", fontWeight: "700",
+                    color: "var(--alert)", marginBottom: "3px",
+                  }}>
                     Something went wrong
                   </div>
-                  <p style={{ color: "var(--text-primary)", fontSize: "13px", margin: 0 }}>{error}</p>
-                  {error.includes("permission") && (
-                    <p style={{ color: "var(--text-secondary)", fontSize: "12px", marginTop: "4px" }}>
-                      {lang === "hi"
-                        ? "ब्राउज़र सेटिंग्स में जाकर लोकेशन की अनुमति दें।"
-                        : "Allow location access in your browser settings and try again."}
-                    </p>
-                  )}
+                  <p style={{ color: "var(--text-primary)", fontSize: "13px", margin: 0 }}>
+                    {error}
+                  </p>
                 </div>
               </div>
             )}
@@ -481,14 +564,17 @@ export default function App() {
                     style={{
                       display: "inline-flex", alignItems: "center", gap: "6px",
                       padding: "7px 14px", marginBottom: "12px",
-                      border: "1px solid var(--border)", borderRadius: "8px",
-                      background: showMap ? "var(--teal)" : "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "var(--radius-sm)",
+                      background: showMap ? "var(--navy)" : "var(--bg-card)",
                       color: showMap ? "white" : "var(--text-secondary)",
                       fontSize: "12px", fontWeight: "600",
-                      transition: "all 0.15s", letterSpacing: "0.02em", cursor: "pointer",
+                      transition: "all var(--transition)", cursor: "pointer",
+                      letterSpacing: "-0.01em",
                     }}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="2.5">
                       <path d="M3 11l19-9-9 19-2-8-8-2z"/>
                     </svg>
                     {showMap
@@ -498,22 +584,31 @@ export default function App() {
                 )}
 
                 {showMap && hospitals.length > 0 && (
-                <HospitalMap hospitals={hospitals} userLocation={userLocation} lang={lang} ambulanceLocation={ambulanceLocation} />
+                  <HospitalMap
+                    hospitals={hospitals}
+                    userLocation={userLocation}
+                    lang={lang}
+                    ambulanceLocation={ambulanceLocation}
+                  />
                 )}
 
                 {hospitals.length > 0
                   ? <HospitalList hospitals={hospitals} lang={lang} />
                   : (
                     <div style={{
-                      background: "var(--bg-card)", border: "1px solid var(--border)",
-                      borderRadius: "12px", padding: "2.5rem",
-                      textAlign: "center", boxShadow: "var(--shadow-sm)",
+                      background: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "var(--radius-lg)",
+                      padding: "3rem 2rem",
+                      textAlign: "center",
+                      boxShadow: "var(--shadow-sm)",
                     }}>
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-tertiary)" strokeWidth="1.5" style={{ marginBottom: "12px" }}>
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                        <polyline points="9 22 9 12 15 12 15 22"/>
-                      </svg>
-                      <p style={{ fontSize: "14px", color: "var(--text-secondary)", fontWeight: "600", marginBottom: "4px" }}>
+                      <div style={{ fontSize: "40px", marginBottom: "12px" }}>🏥</div>
+                      <p style={{
+                        fontSize: "14px", color: "var(--text-secondary)",
+                        fontWeight: "600", marginBottom: "4px",
+                        letterSpacing: "-0.01em",
+                      }}>
                         {lang === "hi" ? "पास में कोई अस्पताल नहीं मिला।" : "No hospitals found nearby"}
                       </p>
                       <p style={{ fontSize: "12px", color: "var(--text-tertiary)" }}>
@@ -528,25 +623,24 @@ export default function App() {
         </div>
       )}
 
-{page === "history" && (
-        <div style={{ maxWidth: "1140px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+      {page === "history" && (
+        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
           <UserHistory />
         </div>
       )}
 
       {page === "firstaid" && (
-        <div style={{ maxWidth: "1140px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
           <FirstAid lang={lang} />
         </div>
       )}
 
       {page === "medicalid" && (
-        <div style={{ maxWidth: "1140px", margin: "0 auto", padding: "1.5rem 1.25rem 4rem" }}>
+        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
           <MedicalID />
         </div>
       )}
-     
-      {/* FAB with callbacks */}
+
       <FAB
         lang={lang}
         userLocation={userLocation}
@@ -554,7 +648,6 @@ export default function App() {
         onChat={() => setShowChat(true)}
       />
 
-      {/* SOS modal — triggered by FAB */}
       <SOSButton
         lang={lang}
         userLocation={userLocation}
@@ -562,7 +655,6 @@ export default function App() {
         onClose={() => setShowSOS(false)}
       />
 
-      {/* Doctor chat modal — triggered by FAB */}
       <DoctorChat
         lang={lang}
         triageResult={triageResult}
@@ -572,7 +664,6 @@ export default function App() {
         onPatientLocation={(loc) => setUserLocation(loc)}
       />
 
-      {/* Sticky emergency bar — mobile only */}
       <div style={{
         position: "fixed", bottom: 0, left: 0, right: 0,
         zIndex: 100, display: "none",
@@ -580,8 +671,9 @@ export default function App() {
         background: "var(--alert)",
       }} className="emergency-bottom">
         <div style={{
-          display: "flex", justifyContent: "space-between", alignItems: "center",
-          padding: "10px 16px", color: "white", fontSize: "13px", fontWeight: "600",
+          display: "flex", justifyContent: "space-between",
+          alignItems: "center", padding: "10px 16px",
+          color: "white", fontSize: "13px", fontWeight: "600",
         }}>
           <span>{lang === "hi" ? "राष्ट्रीय आपातकालीन" : "National Emergency"}</span>
           <a href="tel:112" style={{
