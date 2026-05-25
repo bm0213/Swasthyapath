@@ -5,8 +5,8 @@ const firstAidData = [
     id: "heart-attack",
     emoji: "❤️",
     title: "Heart Attack",
-    color: "#E24B4A",
-    lightColor: "#FCEBEB",
+    color: "#EF4444",
+    lightColor: "#FEF2F2",
     signs: ["Chest pain or pressure", "Pain spreading to arm, neck or jaw", "Shortness of breath", "Sweating, nausea", "Dizziness or fainting"],
     steps: [
       "Call 112 immediately — do not wait.",
@@ -24,7 +24,7 @@ const firstAidData = [
     emoji: "🐍",
     title: "Snake Bite",
     color: "#7C3AED",
-    lightColor: "#F3EEFF",
+    lightColor: "#F5F3FF",
     signs: ["Two puncture marks on skin", "Swelling and pain at bite site", "Nausea and vomiting", "Blurred vision", "Numbness or tingling"],
     steps: [
       "Keep the person calm and still — movement speeds venom spread.",
@@ -41,8 +41,8 @@ const firstAidData = [
     id: "burns",
     emoji: "🔥",
     title: "Burns",
-    color: "#E07B39",
-    lightColor: "#FEF3EB",
+    color: "#F97316",
+    lightColor: "#FFF7ED",
     signs: ["Red, blistered or charred skin", "Severe pain or no pain (deep burns)", "Swelling around burn area", "Smoke inhalation symptoms"],
     steps: [
       "Remove the person from the source of burn immediately.",
@@ -59,8 +59,8 @@ const firstAidData = [
     id: "drowning",
     emoji: "💧",
     title: "Drowning",
-    color: "#185FA5",
-    lightColor: "#E6F1FB",
+    color: "#3B82F6",
+    lightColor: "#EFF6FF",
     signs: ["Unconscious after water rescue", "Not breathing normally", "Blue lips or fingertips", "Coughing up water"],
     steps: [
       "Get the person out of water safely — do not put yourself at risk.",
@@ -95,8 +95,8 @@ const firstAidData = [
     id: "fracture",
     emoji: "🦴",
     title: "Fracture",
-    color: "#0D7A5F",
-    lightColor: "#EDFAF5",
+    color: "#0D9488",
+    lightColor: "#F0FDFA",
     signs: ["Severe pain at injury site", "Swelling and bruising", "Deformity or unnatural angle", "Unable to move the limb", "Bone visible through skin (open fracture)"],
     steps: [
       "Keep the person still — do not move the injured limb.",
@@ -150,8 +150,8 @@ const firstAidData = [
     id: "unconscious",
     emoji: "😵",
     title: "Unconscious Person",
-    color: "#475569",
-    lightColor: "#F1F5F9",
+    color: "#64748B",
+    lightColor: "#F8FAFC",
     signs: ["Not responding to voice or touch", "Eyes closed, limp body", "Irregular or no breathing", "Pale or blue skin"],
     steps: [
       "Call 112 immediately.",
@@ -188,174 +188,255 @@ const firstAidData = [
 export default function FirstAid({ lang }) {
   const [selected, setSelected] = React.useState(null);
   const [search, setSearch] = React.useState("");
+  const [searchFocused, setSearchFocused] = React.useState(false);
 
   const filtered = firstAidData.filter((item) =>
     item.title.toLowerCase().includes(search.toLowerCase())
   );
 
+  // Detail view
   if (selected) {
     const item = firstAidData.find((f) => f.id === selected);
     return (
-      <div style={{
-        maxWidth: "900px", margin: "0 auto",
-        padding: "1.5rem 1.25rem 4rem",
-      }}>
-        {/* Back button */}
+      <div style={{ maxWidth: "860px", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}
+        className="fade-up">
+
+        {/* Back */}
         <button
           onClick={() => setSelected(null)}
           style={{
-            display: "flex", alignItems: "center", gap: "6px",
-            background: "none", border: "none",
+            display: "inline-flex", alignItems: "center", gap: "6px",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-sm)",
             color: "var(--text-secondary)", cursor: "pointer",
-            fontSize: "13px", fontWeight: "600",
-            marginBottom: "1.25rem", padding: 0,
+            fontSize: "12px", fontWeight: "600",
+            marginBottom: "1.25rem", padding: "6px 12px",
+            transition: "all var(--transition)",
           }}
+          onMouseEnter={(e) => e.currentTarget.style.color = "var(--text-primary)"}
+          onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-secondary)"}
         >
-          ← Back to First Aid Guide
+          ← Back to First Aid
         </button>
 
-        {/* Header */}
+        {/* Hero header */}
         <div style={{
           background: item.lightColor,
-          border: `1px solid ${item.color}30`,
+          border: `1px solid ${item.color}25`,
           borderLeft: `4px solid ${item.color}`,
-          borderRadius: "12px", padding: "1.25rem",
-          marginBottom: "1.25rem",
-          display: "flex", alignItems: "center", gap: "16px",
+          borderRadius: "var(--radius-lg)",
+          padding: "1.5rem",
+          marginBottom: "1rem",
+          display: "flex", alignItems: "center", gap: "20px",
         }}>
-          <div style={{ fontSize: "48px" }}>{item.emoji}</div>
-          <div>
+          <div style={{
+            width: "72px", height: "72px", borderRadius: "18px",
+            background: `${item.color}15`,
+            display: "flex", alignItems: "center",
+            justifyContent: "center", fontSize: "40px",
+            flexShrink: 0,
+          }}>
+            {item.emoji}
+          </div>
+          <div style={{ flex: 1 }}>
             <div style={{
               fontSize: "22px", fontWeight: "700",
-              color: item.color, marginBottom: "4px",
+              color: item.color, marginBottom: "8px",
+              letterSpacing: "-0.3px",
+              fontFamily: "var(--font-display)",
             }}>
               {item.title}
             </div>
-            {item.call112 && (
-              <a href="tel:112" style={{
-                display: "inline-flex", alignItems: "center", gap: "6px",
-                padding: "5px 12px",
-                background: "#E24B4A", color: "white",
-                borderRadius: "20px", fontSize: "12px",
-                fontWeight: "700", textDecoration: "none",
+            <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+              {item.call112 && (
+                <a href="tel:112" style={{
+                  display: "inline-flex", alignItems: "center", gap: "6px",
+                  padding: "6px 14px",
+                  background: "#EF4444", color: "white",
+                  borderRadius: "20px", fontSize: "12px",
+                  fontWeight: "700", textDecoration: "none",
+                  boxShadow: "0 2px 8px rgba(239,68,68,0.3)",
+                }}>
+                  📞 Call 112 Now
+                </a>
+              )}
+              <div style={{
+                display: "inline-flex", alignItems: "center", gap: "5px",
+                padding: "6px 12px",
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "20px", fontSize: "11px",
+                fontWeight: "600", color: "var(--text-secondary)",
               }}>
-                📞 Call 112 Now
-              </a>
-            )}
+                ✅ Works offline
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Warning Signs */}
-        <div style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "12px", padding: "1rem 1.25rem",
-          marginBottom: "1rem",
-        }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+          {/* Warning Signs */}
           <div style={{
-            fontSize: "12px", fontWeight: "700",
-            color: "var(--text-tertiary)",
-            textTransform: "uppercase", letterSpacing: "0.08em",
-            marginBottom: "10px",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-lg)",
+            overflow: "hidden",
+            boxShadow: "var(--shadow-sm)",
           }}>
-            ⚠️ Warning Signs
-          </div>
-          {item.signs.map((sign, i) => (
-            <div key={i} style={{
-              display: "flex", alignItems: "flex-start", gap: "8px",
-              padding: "6px 0",
-              borderBottom: i < item.signs.length - 1 ? "1px solid var(--border)" : "none",
+            <div style={{
+              padding: "12px 16px",
+              borderBottom: "1px solid var(--border)",
+              background: "var(--bg-secondary)",
+              display: "flex", alignItems: "center", gap: "8px",
             }}>
-              <div style={{
-                width: "6px", height: "6px", borderRadius: "50%",
-                background: item.color, flexShrink: 0, marginTop: "6px",
-              }} />
-              <span style={{ fontSize: "13px", color: "var(--text-primary)" }}>
-                {sign}
+              <span style={{ fontSize: "14px" }}>⚠️</span>
+              <span style={{
+                fontSize: "10px", fontWeight: "700",
+                color: "var(--text-tertiary)",
+                textTransform: "uppercase", letterSpacing: "0.1em",
+              }}>
+                Warning Signs
               </span>
             </div>
-          ))}
+            <div style={{ padding: "8px 16px" }}>
+              {item.signs.map((sign, i) => (
+                <div key={i} style={{
+                  display: "flex", alignItems: "flex-start", gap: "10px",
+                  padding: "8px 0",
+                  borderBottom: i < item.signs.length - 1 ? "1px solid var(--border)" : "none",
+                }}>
+                  <div style={{
+                    width: "6px", height: "6px", borderRadius: "50%",
+                    background: item.color, flexShrink: 0, marginTop: "7px",
+                  }} />
+                  <span style={{
+                    fontSize: "13px", color: "var(--text-primary)",
+                    lineHeight: "1.5", letterSpacing: "-0.01em",
+                  }}>
+                    {sign}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Don'ts */}
+          <div style={{
+            background: "#FEF2F2",
+            border: "1px solid #FECACA",
+            borderRadius: "var(--radius-lg)",
+            overflow: "hidden",
+            boxShadow: "var(--shadow-sm)",
+          }}>
+            <div style={{
+              padding: "12px 16px",
+              borderBottom: "1px solid #FECACA",
+              background: "#FEE2E2",
+              display: "flex", alignItems: "center", gap: "8px",
+            }}>
+              <span style={{ fontSize: "14px" }}>❌</span>
+              <span style={{
+                fontSize: "10px", fontWeight: "700",
+                color: "#991B1B",
+                textTransform: "uppercase", letterSpacing: "0.1em",
+              }}>
+                What NOT To Do
+              </span>
+            </div>
+            <div style={{ padding: "8px 16px" }}>
+              {item.donts.map((dont, i) => (
+                <div key={i} style={{
+                  display: "flex", alignItems: "flex-start", gap: "10px",
+                  padding: "8px 0",
+                  borderBottom: i < item.donts.length - 1 ? "1px solid #FECACA" : "none",
+                }}>
+                  <span style={{
+                    color: "#EF4444", flexShrink: 0,
+                    fontWeight: "700", fontSize: "12px", marginTop: "1px",
+                  }}>✕</span>
+                  <span style={{
+                    fontSize: "13px", color: "#7F1D1D",
+                    lineHeight: "1.5", letterSpacing: "-0.01em",
+                  }}>
+                    {dont}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Steps */}
         <div style={{
           background: "var(--bg-card)",
           border: "1px solid var(--border)",
-          borderRadius: "12px", padding: "1rem 1.25rem",
-          marginBottom: "1rem",
+          borderRadius: "var(--radius-lg)",
+          overflow: "hidden",
+          boxShadow: "var(--shadow-sm)",
+          marginBottom: "12px",
         }}>
           <div style={{
-            fontSize: "12px", fontWeight: "700",
-            color: "var(--text-tertiary)",
-            textTransform: "uppercase", letterSpacing: "0.08em",
-            marginBottom: "10px",
+            padding: "12px 16px",
+            borderBottom: "1px solid var(--border)",
+            background: "var(--bg-secondary)",
+            display: "flex", alignItems: "center", gap: "8px",
           }}>
-            ✅ What To Do
-          </div>
-          {item.steps.map((step, i) => (
-            <div key={i} style={{
-              display: "flex", alignItems: "flex-start", gap: "12px",
-              padding: "10px 0",
-              borderBottom: i < item.steps.length - 1 ? "1px solid var(--border)" : "none",
+            <span style={{ fontSize: "14px" }}>✅</span>
+            <span style={{
+              fontSize: "10px", fontWeight: "700",
+              color: "var(--text-tertiary)",
+              textTransform: "uppercase", letterSpacing: "0.1em",
             }}>
-              <div style={{
-                width: "24px", height: "24px", borderRadius: "50%",
-                background: item.color, color: "white",
-                fontSize: "11px", fontWeight: "700",
-                display: "flex", alignItems: "center",
-                justifyContent: "center", flexShrink: 0,
+              Step-by-Step Instructions
+            </span>
+          </div>
+          <div style={{ padding: "8px 16px" }}>
+            {item.steps.map((step, i) => (
+              <div key={i} style={{
+                display: "flex", alignItems: "flex-start", gap: "14px",
+                padding: "12px 0",
+                borderBottom: i < item.steps.length - 1 ? "1px solid var(--border)" : "none",
               }}>
-                {i + 1}
+                <div style={{
+                  width: "26px", height: "26px", borderRadius: "50%",
+                  background: item.color, color: "white",
+                  fontSize: "11px", fontWeight: "700",
+                  display: "flex", alignItems: "center",
+                  justifyContent: "center", flexShrink: 0,
+                  boxShadow: `0 2px 6px ${item.color}40`,
+                }}>
+                  {i + 1}
+                </div>
+                <span style={{
+                  fontSize: "13px", color: "var(--text-primary)",
+                  lineHeight: "1.65", paddingTop: "4px",
+                  letterSpacing: "-0.01em",
+                }}>
+                  {step}
+                </span>
               </div>
-              <span style={{
-                fontSize: "13px", color: "var(--text-primary)",
-                lineHeight: "1.6", paddingTop: "3px",
-              }}>
-                {step}
-              </span>
-            </div>
-          ))}
-        </div>
-
-        {/* Don'ts */}
-        <div style={{
-          background: "#FCEBEB",
-          border: "1px solid #F0959530",
-          borderRadius: "12px", padding: "1rem 1.25rem",
-          marginBottom: "1rem",
-        }}>
-          <div style={{
-            fontSize: "12px", fontWeight: "700",
-            color: "#501313",
-            textTransform: "uppercase", letterSpacing: "0.08em",
-            marginBottom: "10px",
-          }}>
-            ❌ What NOT To Do
+            ))}
           </div>
-          {item.donts.map((dont, i) => (
-            <div key={i} style={{
-              display: "flex", alignItems: "flex-start", gap: "8px",
-              padding: "6px 0",
-              borderBottom: i < item.donts.length - 1 ? "1px solid #F0959530" : "none",
-            }}>
-              <span style={{ color: "#E24B4A", flexShrink: 0, fontWeight: "700" }}>✕</span>
-              <span style={{ fontSize: "13px", color: "#501313", lineHeight: "1.5" }}>
-                {dont}
-              </span>
-            </div>
-          ))}
         </div>
 
-        {/* Call 112 button */}
+        {/* Call 112 CTA */}
         {item.call112 && (
           <a href="tel:112" style={{
             display: "flex", alignItems: "center",
-            justifyContent: "center", gap: "8px",
-            padding: "14px",
-            background: "#E24B4A", color: "white",
-            borderRadius: "12px", fontSize: "15px",
-            fontWeight: "700", textDecoration: "none",
-          }}>
+            justifyContent: "center", gap: "10px",
+            padding: "16px",
+            background: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+            color: "white",
+            borderRadius: "var(--radius-lg)",
+            fontSize: "15px", fontWeight: "700",
+            textDecoration: "none",
+            boxShadow: "0 4px 16px rgba(239,68,68,0.3)",
+            transition: "all var(--transition)",
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-1px)"}
+          onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+          >
             📞 Call 112 — National Emergency
           </a>
         )}
@@ -363,58 +444,85 @@ export default function FirstAid({ lang }) {
     );
   }
 
+  // Grid view
   return (
-    <div style={{
-      maxWidth: "900px", margin: "0 auto",
-      padding: "1.5rem 1.25rem 4rem",
-    }}>
-      {/* Header */}
-      <div style={{ marginBottom: "1.25rem" }}>
-        <div style={{
-          fontSize: "20px", fontWeight: "700",
-          color: "var(--text-primary)", marginBottom: "4px",
-        }}>
-          🚑 First Aid Guide
-        </div>
-        <div style={{ fontSize: "12px", color: "var(--text-tertiary)" }}>
-          Step-by-step emergency instructions — works offline
-        </div>
-      </div>
+    <div style={{ maxWidth: "100%", padding: "1.5rem 1.5rem 4rem" }}
+      className="fade-up">
 
-      {/* Offline badge */}
+      {/* Header */}
       <div style={{
-        display: "inline-flex", alignItems: "center", gap: "6px",
-        fontSize: "11px", fontWeight: "600",
-        color: "#0D7A5F", background: "#EDFAF5",
-        border: "1px solid #0D7A5F30",
-        padding: "5px 12px", borderRadius: "20px",
-        marginBottom: "1.25rem",
+        display: "flex", alignItems: "flex-start",
+        justifyContent: "space-between", marginBottom: "1.5rem",
+        flexWrap: "wrap", gap: "12px",
       }}>
-        ✅ Available offline — no internet needed
+        <div>
+          <h1 style={{
+            fontSize: "24px", fontWeight: "700",
+            color: "var(--text-primary)", marginBottom: "4px",
+            letterSpacing: "-0.4px",
+            fontFamily: "var(--font-display)",
+          }}>
+            🚑 First Aid Guide
+          </h1>
+          <p style={{
+            fontSize: "13px", color: "var(--text-secondary)",
+            margin: 0, letterSpacing: "-0.01em",
+          }}>
+            Step-by-step emergency instructions for 10 critical situations
+          </p>
+        </div>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: "6px",
+          fontSize: "11px", fontWeight: "600",
+          color: "var(--teal)", background: "var(--teal-light)",
+          border: "1px solid var(--teal)20",
+          padding: "6px 14px", borderRadius: "20px",
+        }}>
+          ✅ Works offline
+        </div>
       </div>
 
       {/* Search */}
-      <input
-        type="text"
-        placeholder="Search emergencies..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{
-          width: "100%", padding: "10px 14px",
-          border: "1px solid var(--border)",
-          borderRadius: "10px", marginBottom: "1.25rem",
-          background: "var(--bg-secondary)",
-          color: "var(--text-primary)",
-          fontSize: "14px", outline: "none",
-          boxSizing: "border-box",
-        }}
-      />
+      <div style={{
+        position: "relative", marginBottom: "1.5rem",
+      }}>
+        <svg style={{
+          position: "absolute", left: "14px", top: "50%",
+          transform: "translateY(-50%)",
+          color: searchFocused ? "var(--teal)" : "var(--text-tertiary)",
+          transition: "color var(--transition)",
+          pointerEvents: "none",
+        }} width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" strokeWidth="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input
+          type="text"
+          placeholder="Search emergencies..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+          style={{
+            width: "100%", padding: "11px 14px 11px 40px",
+            border: `1.5px solid ${searchFocused ? "var(--teal)" : "var(--border)"}`,
+            borderRadius: "var(--radius-md)",
+            background: "var(--bg-card)",
+            color: "var(--text-primary)",
+            fontSize: "14px", outline: "none",
+            boxSizing: "border-box",
+            boxShadow: searchFocused ? "0 0 0 3px rgba(11,122,94,0.10)" : "var(--shadow-xs)",
+            transition: "all var(--transition)",
+          }}
+        />
+      </div>
 
       {/* Grid */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-        gap: "12px",
+        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+        gap: "14px",
       }}>
         {filtered.map((item) => (
           <button
@@ -422,28 +530,57 @@ export default function FirstAid({ lang }) {
             onClick={() => setSelected(item.id)}
             style={{
               background: "var(--bg-card)",
-              border: `1px solid var(--border)`,
+              border: "1px solid var(--border)",
               borderTop: `3px solid ${item.color}`,
-              borderRadius: "12px", padding: "1rem",
+              borderRadius: "var(--radius-lg)",
+              padding: "1.25rem",
               cursor: "pointer", textAlign: "left",
-              transition: "all 0.15s",
+              transition: "all var(--transition)",
               display: "flex", flexDirection: "column",
-              gap: "8px",
+              gap: "10px",
+              boxShadow: "var(--shadow-xs)",
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-2px)"}
-            onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-3px)";
+              e.currentTarget.style.boxShadow = "var(--shadow-md)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "var(--shadow-xs)";
+            }}
           >
-            <div style={{ fontSize: "32px" }}>{item.emoji}</div>
             <div style={{
-              fontSize: "13px", fontWeight: "600",
-              color: "var(--text-primary)", lineHeight: "1.3",
+              width: "48px", height: "48px", borderRadius: "12px",
+              background: `${item.color}12`,
+              display: "flex", alignItems: "center",
+              justifyContent: "center", fontSize: "26px",
             }}>
-              {item.title}
+              {item.emoji}
+            </div>
+            <div>
+              <div style={{
+                fontSize: "13px", fontWeight: "700",
+                color: "var(--text-primary)", lineHeight: "1.3",
+                marginBottom: "4px", letterSpacing: "-0.01em",
+              }}>
+                {item.title}
+              </div>
+              <div style={{
+                fontSize: "11px", color: "var(--text-tertiary)",
+                letterSpacing: "-0.01em",
+              }}>
+                {item.signs.length} warning signs
+              </div>
             </div>
             {item.call112 && (
               <div style={{
-                fontSize: "10px", fontWeight: "600",
-                color: "#E24B4A",
+                display: "inline-flex", alignItems: "center", gap: "4px",
+                fontSize: "10px", fontWeight: "700",
+                color: "#EF4444",
+                background: "#FEF2F2",
+                border: "1px solid #FECACA",
+                padding: "3px 8px", borderRadius: "20px",
+                width: "fit-content",
               }}>
                 🚨 Call 112
               </div>
@@ -451,6 +588,15 @@ export default function FirstAid({ lang }) {
           </button>
         ))}
       </div>
+
+      {filtered.length === 0 && (
+        <div style={{
+          textAlign: "center", padding: "3rem",
+          color: "var(--text-tertiary)", fontSize: "14px",
+        }}>
+          No results for "{search}"
+        </div>
+      )}
     </div>
   );
 }
