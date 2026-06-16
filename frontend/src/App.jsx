@@ -16,6 +16,7 @@ import UserHistory from "./components/UserHistory";
 import Settings from "./pages/Settings";
 import SOSButton from "./components/SOSButton";
 import DoctorChat from "./components/DoctorChat";
+import LandingPage from "./pages/LandingPage";
 import { callTriage } from "./utils/triage";
 import { matchHospitals } from "./utils/matchHospitals";
 import { getUserLocation, reverseGeocode } from "./utils/location";
@@ -75,7 +76,7 @@ function StatusPill({ icon, label, value, color, onClick }) {
 
 export default function App() {
   const [lang, setLang] = React.useState("en");
-  const [page, setPage] = React.useState("home");
+  const [page, setPage] = React.useState("landing");
   const [isLoading, setIsLoading] = React.useState(false);
   const [loadingMessage, setLoadingMessage] = React.useState("");
   const [triageResult, setTriageResult] = React.useState(null);
@@ -177,7 +178,15 @@ export default function App() {
       />
 
       {page === "settings" && (
-        <Settings lang={lang} setLang={setLang} onClose={() => setPage("home")} />
+        <Settings lang={lang} setLang={setLang} onClose={() => setPage("landing")} />
+      )}
+
+      {page === "landing" && (
+        <LandingPage
+          setPage={setPage}
+          onSOS={() => setShowSOS(true)}
+          onChat={() => setShowChat(true)}
+        />
       )}
 
       {page === "admin" && (

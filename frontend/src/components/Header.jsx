@@ -29,6 +29,7 @@ export default function Header({ lang, setLang, currentPage, setPage, isAdmin })
   const currentLang = languages.find((l) => l.code === lang);
 
   const navItems = [
+    { id: "landing", label: "Home", icon: "🏠" },
     { id: "home", label: "Triage", icon: "🏥" },
     { id: "firstaid", label: "First Aid", icon: "🩹" },
     { id: "medicalid", label: "Medical ID", icon: "🪪" },
@@ -38,6 +39,7 @@ export default function Header({ lang, setLang, currentPage, setPage, isAdmin })
   ];
 
   const pageSubtitles = {
+    landing: "AI-Powered Emergency Response",
     home: "Emergency Response System",
     firstaid: "First Aid Guide",
     medicalid: "Medical ID",
@@ -62,7 +64,7 @@ export default function Header({ lang, setLang, currentPage, setPage, isAdmin })
       }}>
         {/* Logo */}
         <div
-          onClick={() => setPage("home")}
+          onClick={() => setPage("landing")}
           onDoubleClick={() => setPage("admin")}
           style={{
             display: "flex", alignItems: "center",
