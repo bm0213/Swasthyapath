@@ -1,371 +1,256 @@
 import React from "react";
+import LiveECGMonitor from "../components/LiveECGMonitor";
 
 const features = [
   {
     id: "home",
+    title: "AI Symptom Triage",
+    description: "Understand what may be happening and what to do next.",
+    action: "Start assessment",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" strokeWidth="1.5"/>
-        <circle cx="12" cy="10" r="3" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M7 20c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
       </svg>
     ),
-    title: "AI Symptom Triage",
-    description: "Describe symptoms in any language. Claude AI instantly assesses severity and recommends the right hospital.",
-    color: "#3B82F6",
-    gradient: "linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)",
   },
   {
     id: "firstaid",
+    title: "First Aid Guide",
+    description: "Clear step-by-step procedures for urgent situations.",
+    action: "Open guide",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
       </svg>
     ),
-    title: "First Aid Guide",
-    description: "Step-by-step offline first aid for 10 emergencies — Heart Attack, Snake Bite, Burns, Drowning and more.",
-    color: "#10B981",
-    gradient: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
   },
   {
     id: "medicalid",
+    title: "Medical ID",
+    description: "Keep allergies, contacts, and critical records accessible.",
+    action: "Manage ID",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="4" width="18" height="16" rx="3" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M7 9h4M7 13h10M7 16h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        <circle cx="16" cy="9" r="2" stroke="currentColor" strokeWidth="1.5"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="5" width="16" height="14" rx="3" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M8 10h5M8 14h8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
-    title: "Medical ID",
-    description: "Store your blood group, allergies, medications, and emergency contacts — accessible anytime.",
-    color: "#8B5CF6",
-    gradient: "linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)",
   },
   {
     id: "history",
+    title: "Triage History",
+    description: "Review past assessments and recommended facilities.",
+    action: "View records",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M12 7v5l3 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M12 8v5l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
       </svg>
     ),
-    title: "My Triage History",
-    description: "View your past triage records — symptoms, severity assessments, and recommended facilities.",
-    color: "#F59E0B",
-    gradient: "linear-gradient(135deg, #F59E0B 0%, #D97706 100%)",
   },
   {
     id: "chat",
+    title: "Doctor Consultation",
+    description: "Create a room for real-time chat or video support.",
+    action: "Start consult",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path d="M21 12c0 4.4-4 8-9 8-1.3 0-2.5-.2-3.6-.7L3 21l1.7-4.3C3.6 15.2 3 13.7 3 12c0-4.4 4-8 9-8s9 3.6 9 8z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-        <path d="M9 12h.01M12 12h.01M15 12h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M21 12a8 8 0 0 1-8 8H7l-4 2 1.5-4.5A8 8 0 1 1 21 12Z" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M8 12h.01M12 12h.01M16 12h.01" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
       </svg>
     ),
-    title: "Doctor Chat",
-    description: "Real-time chat and video consultation with volunteer doctors powered by WebRTC.",
-    color: "#06B6D4",
-    gradient: "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
   },
   {
     id: "sos",
+    title: "SOS Emergency",
+    description: "Trigger emergency contacts and location sharing quickly.",
+    action: "Emergency assistance",
+    emergency: true,
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M12 7v6M12 16.5h.01" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
       </svg>
     ),
-    title: "SOS Emergency",
-    description: "One-tap emergency alert with live GPS location sharing to nearby hospitals and contacts.",
-    color: "#EF4444",
-    gradient: "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
   },
   {
     id: "admin",
+    title: "Admin Dashboard",
+    description: "Monitor triage patterns, severity, and recent activity.",
+    action: "Open dashboard",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="3" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-        <rect x="14" y="3" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-        <rect x="3" y="14" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-        <rect x="14" y="14" width="7" height="7" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="4" width="6" height="6" rx="2" stroke="currentColor" strokeWidth="1.8" />
+        <rect x="14" y="4" width="6" height="6" rx="2" stroke="currentColor" strokeWidth="1.8" />
+        <rect x="4" y="14" width="6" height="6" rx="2" stroke="currentColor" strokeWidth="1.8" />
+        <rect x="14" y="14" width="6" height="6" rx="2" stroke="currentColor" strokeWidth="1.8" />
       </svg>
     ),
-    title: "Admin Dashboard",
-    description: "Protected admin panel with full stats, severity breakdown, symptom trends and recent activity.",
-    color: "#EC4899",
-    gradient: "linear-gradient(135deg, #EC4899 0%, #DB2777 100%)",
   },
   {
     id: "settings",
+    title: "Settings",
+    description: "Tune language, accessibility, and emergency preferences.",
+    action: "Personalize",
     icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5"/>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="1.5"/>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M19 15a1.6 1.6 0 0 0 .32 1.76l.04.04a2 2 0 1 1-2.83 2.83l-.04-.04A1.6 1.6 0 0 0 14.73 19 1.6 1.6 0 0 0 13.8 20.45V21a1.8 1.8 0 1 1-3.6 0v-.55A1.6 1.6 0 0 0 9.27 19a1.6 1.6 0 0 0-1.76.32l-.04.04a2 2 0 1 1-2.83-2.83l.04-.04A1.6 1.6 0 0 0 5 14.73a1.6 1.6 0 0 0-1.45-.93H3a1.8 1.8 0 1 1 0-3.6h.55A1.6 1.6 0 0 0 5 9.27a1.6 1.6 0 0 0-.32-1.76l-.04-.04a2 2 0 1 1 2.83-2.83l.04.04A1.6 1.6 0 0 0 9.27 5a1.6 1.6 0 0 0 .93-1.45V3a1.8 1.8 0 1 1 3.6 0v.55A1.6 1.6 0 0 0 14.73 5a1.6 1.6 0 0 0 1.76-.32l.04-.04a2 2 0 1 1 2.83 2.83l-.04.04A1.6 1.6 0 0 0 19 9.27a1.6 1.6 0 0 0 1.45.93H21a1.8 1.8 0 1 1 0 3.6h-.55A1.6 1.6 0 0 0 19 15Z" stroke="currentColor" strokeWidth="1.5" />
       </svg>
     ),
-    title: "Settings",
-    description: "Customize language, theme, font size and accessibility preferences to suit your needs.",
-    color: "#6366F1",
-    gradient: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)",
   },
 ];
 
-const howItWorks = [
-  {
-    step: "01",
-    title: "Describe Symptoms",
-    description: "Type or speak your symptoms in any of 6 supported Indian languages",
-    icon: "🗣️",
-  },
-  {
-    step: "02",
-    title: "AI Analysis",
-    description: "Claude AI instantly assesses severity — Critical, Urgent, or Moderate",
-    icon: "🤖",
-  },
-  {
-    step: "03",
-    title: "Find Hospitals",
-    description: "Real GPS locates the nearest hospitals with required facilities",
-    icon: "🗺️",
-  },
-  {
-    step: "04",
-    title: "Get Help",
-    description: "Call, get directions, chat with a doctor, or request an ambulance",
-    icon: "🚑",
-  },
+const steps = [
+  ["01", "Describe symptoms", "Use natural language or voice input."],
+  ["02", "Get guided triage", "Severity, do-now advice, and required facilities."],
+  ["03", "Find care nearby", "GPS-matched hospitals and emergency actions."],
+  ["04", "Stay connected", "Doctor chat, video, contacts, and records."],
 ];
 
 const trustBadges = [
-  { icon: "🌍", label: "6 Languages", sublabel: "Multi-lingual support" },
-  { icon: "📴", label: "Offline Ready", sublabel: "Works without internet" },
-  { icon: "🤖", label: "AI-Powered", sublabel: "Claude by Anthropic" },
-  { icon: "📍", label: "Real GPS", sublabel: "Live location tracking" },
-  { icon: "📹", label: "Video Call", sublabel: "WebRTC powered" },
-  { icon: "📱", label: "PWA Ready", sublabel: "Install on mobile" },
+  ["6 Languages", "Regional access"],
+  ["Offline Ready", "First aid works locally"],
+  ["Real GPS", "Nearby hospital matching"],
+  ["Voice Input", "Accessible under stress"],
+  ["WebRTC", "Video consultation"],
+  ["PWA Ready", "Mobile-first response"],
 ];
 
 export default function LandingPage({ setPage, onSOS, onChat }) {
-  const [hoveredCard, setHoveredCard] = React.useState(null);
-  const [visibleSections, setVisibleSections] = React.useState(new Set());
-
-  React.useEffect(() => {
-    const timers = [
-      setTimeout(() => setVisibleSections((s) => new Set([...s, "hero"])), 100),
-      setTimeout(() => setVisibleSections((s) => new Set([...s, "features"])), 300),
-      setTimeout(() => setVisibleSections((s) => new Set([...s, "howitworks"])), 500),
-      setTimeout(() => setVisibleSections((s) => new Set([...s, "trust"])), 700),
-      setTimeout(() => setVisibleSections((s) => new Set([...s, "footer"])), 850),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
   function handleFeatureClick(feature) {
-    if (feature.id === "chat") {
-      onChat?.();
-    } else if (feature.id === "sos") {
-      onSOS?.();
-    } else {
-      setPage(feature.id);
-    }
+    if (feature.id === "chat") onChat?.();
+    else if (feature.id === "sos") onSOS?.();
+    else setPage(feature.id);
   }
 
-  const sectionStyle = (name) => ({
-    opacity: visibleSections.has(name) ? 1 : 0,
-    transform: visibleSections.has(name) ? "translateY(0)" : "translateY(30px)",
-    transition: "opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
-  });
-
   return (
-    <div className="landing-page">
-      {/* === HERO === */}
-      <section className="landing-hero" style={sectionStyle("hero")}>
-        <div className="landing-hero-bg">
-          <div className="landing-hero-orb landing-hero-orb-1" />
-          <div className="landing-hero-orb landing-hero-orb-2" />
-          <div className="landing-hero-orb landing-hero-orb-3" />
-        </div>
-
+    <div className="landing-page fade-in">
+      <section className="landing-hero">
         <div className="landing-hero-content">
           <div className="landing-hero-badge">
             <span className="landing-hero-badge-dot" />
-            AI-Powered Emergency Response
+            Emergency medical guidance
           </div>
-
-          <h1 className="landing-hero-title">
-            <span className="landing-hero-title-gradient">SwasthyaPath</span>
-          </h1>
+          <h1 className="landing-hero-title">SwasthyaPath</h1>
           <p className="landing-hero-subtitle">
-            Emergency Medical Triage for Rural India
+            Emergency medical guidance, when every second matters.
           </p>
           <p className="landing-hero-description">
-            Describe symptoms in any language — get instant AI-powered severity assessment, 
-            find the nearest hospital, chat with a doctor, or call an ambulance. All in seconds.
+            Describe symptoms, understand urgency, find nearby hospitals, and connect to help through a calm healthcare command center designed for stressful moments.
           </p>
-
           <div className="landing-hero-actions">
-            <button
-              className="landing-cta-primary"
-              onClick={() => setPage("home")}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 4v16M4 12h16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+            <button className="landing-cta-primary" onClick={() => setPage("home")}>
+              Start Emergency Guide
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-              Start Triage Now
-              <span className="landing-cta-shimmer" />
             </button>
             <button
               className="landing-cta-secondary"
-              onClick={() => {
-                document.getElementById("landing-features")?.scrollIntoView({ behavior: "smooth" });
-              }}
+              onClick={() => document.getElementById("landing-features")?.scrollIntoView({ behavior: "smooth" })}
             >
               Explore Features
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
             </button>
           </div>
+        </div>
 
-          <div className="landing-hero-stats">
-            {trustBadges.slice(0, 4).map((b) => (
-              <div key={b.label} className="landing-hero-stat">
-                <span className="landing-hero-stat-icon">{b.icon}</span>
-                <span className="landing-hero-stat-label">{b.label}</span>
-              </div>
-            ))}
+        <div className="landing-command" aria-label="Emergency readiness preview">
+          <div className="command-strip">
+            <div>
+              <div className="command-label">Mode</div>
+              <div className="command-value">Emergency Ready</div>
+            </div>
+            <div>
+              <div className="command-label">Response</div>
+              <div className="command-value" style={{ color: "var(--teal-mid)" }}>Guided</div>
+            </div>
+          </div>
+          <div className="vitals-line">
+            <LiveECGMonitor bpm={72} />
+          </div>
+          <div className="command-strip">
+            <div>
+              <div className="command-label">Primary action</div>
+              <div className="command-value">Call 112</div>
+            </div>
+            <div>
+              <div className="command-label">Support</div>
+              <div className="command-value">Hospitals + Doctor</div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* === FEATURES GRID === */}
-      <section
-        id="landing-features"
-        className="landing-section"
-        style={sectionStyle("features")}
-      >
+      <section id="landing-features" className="landing-section">
         <div className="landing-section-header">
           <span className="landing-section-eyebrow">Features</span>
-          <h2 className="landing-section-title">Everything You Need in an Emergency</h2>
+          <h2 className="landing-section-title">One system for the first minutes of care.</h2>
           <p className="landing-section-desc">
-            From AI-powered triage to live ambulance tracking — every tool designed to save precious time.
+            Each tool stays focused, scan-friendly, and medically responsible without competing with critical emergency actions.
           </p>
         </div>
 
         <div className="landing-features-grid">
-          {features.map((f, i) => (
+          {features.map((f) => (
             <button
               key={f.id}
-              className={`landing-feature-card ${hoveredCard === i ? "landing-feature-card-hovered" : ""}`}
+              className="landing-feature-card"
               onClick={() => handleFeatureClick(f)}
-              onMouseEnter={() => setHoveredCard(i)}
-              onMouseLeave={() => setHoveredCard(null)}
-              style={{ animationDelay: `${i * 0.06}s` }}
+              style={f.emergency ? { borderColor: "rgba(225,29,72,0.55)" } : undefined}
             >
-              <div
+              <span
                 className="landing-feature-icon"
-                style={{
-                  background: f.gradient,
-                  boxShadow: hoveredCard === i ? `0 8px 24px ${f.color}40` : `0 4px 12px ${f.color}20`,
-                }}
+                style={f.emergency ? { color: "var(--alert)", borderColor: "rgba(225,29,72,0.3)", background: "var(--alert-light)" } : undefined}
               >
-                <span style={{ color: "white" }}>{f.icon}</span>
-              </div>
-              <div className="landing-feature-body">
-                <h3 className="landing-feature-title">{f.title}</h3>
-                <p className="landing-feature-desc">{f.description}</p>
-              </div>
-              <div className="landing-feature-arrow" style={{ color: f.color }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </div>
+                {f.icon}
+              </span>
+              <span>
+                <span className="landing-feature-title">{f.title}</span>
+                <span className="landing-feature-desc" style={{ display: "block", marginTop: 6 }}>
+                  {f.description}
+                </span>
+              </span>
+              <span className="landing-feature-action" style={f.emergency ? { color: "var(--alert)" } : undefined}>
+                {f.action} →
+              </span>
             </button>
           ))}
         </div>
       </section>
 
-      {/* === HOW IT WORKS === */}
-      <section className="landing-section" style={sectionStyle("howitworks")}>
+      <section className="landing-section">
         <div className="landing-section-header">
-          <span className="landing-section-eyebrow">How It Works</span>
-          <h2 className="landing-section-title">Help in 4 Simple Steps</h2>
-          <p className="landing-section-desc">
-            Designed for speed and simplicity — even under extreme stress.
-          </p>
+          <span className="landing-section-eyebrow">Flow</span>
+          <h2 className="landing-section-title">Built for decisions under pressure.</h2>
         </div>
-
         <div className="landing-steps">
-          {howItWorks.map((s, i) => (
-            <React.Fragment key={s.step}>
-              <div className="landing-step-card">
-                <div className="landing-step-number">{s.step}</div>
-                <div className="landing-step-icon">{s.icon}</div>
-                <h3 className="landing-step-title">{s.title}</h3>
-                <p className="landing-step-desc">{s.description}</p>
-              </div>
-              {i < howItWorks.length - 1 && (
-                <div className="landing-step-connector">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal-mid)" strokeWidth="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                  </svg>
-                </div>
-              )}
-            </React.Fragment>
+          {steps.map(([num, title, desc]) => (
+            <div className="landing-step-card" key={num}>
+              <div className="landing-step-number">{num}</div>
+              <h3 className="landing-step-title">{title}</h3>
+              <p className="landing-step-desc">{desc}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* === TRUST BADGES === */}
-      <section className="landing-section" style={sectionStyle("trust")}>
+      <section className="landing-section">
         <div className="landing-trust-grid">
-          {trustBadges.map((b) => (
-            <div key={b.label} className="landing-trust-badge">
-              <span className="landing-trust-icon">{b.icon}</span>
-              <div>
-                <div className="landing-trust-label">{b.label}</div>
-                <div className="landing-trust-sublabel">{b.sublabel}</div>
-              </div>
+          {trustBadges.map(([label, sublabel]) => (
+            <div key={label} className="landing-trust-badge">
+              <div className="landing-trust-label">{label}</div>
+              <div className="landing-trust-sublabel">{sublabel}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* === CTA BANNER === */}
-      <section className="landing-section" style={sectionStyle("footer")}>
-        <div className="landing-cta-banner">
-          <h2 className="landing-cta-banner-title">
-            Every Second Counts in an Emergency
-          </h2>
-          <p className="landing-cta-banner-desc">
-            SwasthyaPath helps you find the right hospital, right now.
-          </p>
-          <button className="landing-cta-primary" onClick={() => setPage("home")}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 4v16M4 12h16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-            </svg>
-            Start Triage Now
-            <span className="landing-cta-shimmer" />
-          </button>
-        </div>
-      </section>
-
-      {/* === FOOTER === */}
-      <footer className="landing-footer" style={sectionStyle("footer")}>
+      <footer className="landing-footer">
         <div className="landing-footer-inner">
-          <div className="landing-footer-brand">
-            <div className="landing-footer-logo">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 4v16M4 12h16" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-              </svg>
-            </div>
-            <span className="landing-footer-name">SwasthyaPath</span>
-          </div>
-          <p className="landing-footer-tagline">
-            Made with ❤️ for rural India's emergency healthcare
-          </p>
+          <strong style={{ color: "var(--text-primary)" }}>SwasthyaPath</strong>
+          <span>Emergency guidance, hospital matching, first aid, and medical ID in one place.</span>
         </div>
       </footer>
     </div>

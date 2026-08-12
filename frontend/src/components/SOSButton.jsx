@@ -1,6 +1,7 @@
 import React from "react";
 
 export default function SOSButton({ lang, userLocation, forceOpen, onClose }) {
+  const [showEmergency, setShowEmergency] = React.useState(false);
   const [showSetup, setShowSetup] = React.useState(false);
   const [showConfirm, setShowConfirm] = React.useState(false);
   const [contacts, setContacts] = React.useState(() => {
@@ -9,15 +10,13 @@ export default function SOSButton({ lang, userLocation, forceOpen, onClose }) {
   });
   const [sent, setSent] = React.useState(false);
 
-  // Open setup modal when FAB triggers SOS
   React.useEffect(() => {
-    if (forceOpen) setShowSetup(true);
+    if (forceOpen) setShowEmergency(true);
   }, [forceOpen]);
 
-  // Notify parent when modals close
   React.useEffect(() => {
-    if (!showSetup && !showConfirm) onClose?.();
-  }, [showSetup, showConfirm]);
+    if (!showEmergency && !showSetup && !showConfirm) onClose?.();
+  }, [showEmergency, showSetup, showConfirm]);
 
   const enStrings = {
     sos: "SOS",
@@ -62,6 +61,14 @@ export default function SOSButton({ lang, userLocation, forceOpen, onClose }) {
 
   const s = lang === "hi" ? hiStrings : enStrings;
   const validContacts = contacts.filter((c) => c.phone.trim().length >= 10);
+  const emergencyOptions = [
+    "Chest pain",
+    "Difficulty breathing",
+    "Severe bleeding",
+    "Unconsciousness",
+    "Choking",
+    "Stroke signs",
+  ];
 
   function saveContacts() {
     localStorage.setItem("sos-contacts", JSON.stringify(contacts));
@@ -125,17 +132,155 @@ export default function SOSButton({ lang, userLocation, forceOpen, onClose }) {
         }
       `}</style>
 
+      {showEmergency && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 300,
+            background: "rgba(7,17,31,0.84)",
+            backdropFilter: "blur(14px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowEmergency(false); }}
+        >
+          <div className="premium-card fade-up" style={{
+            width: "min(720px, 100%)",
+            maxHeight: "92vh",
+            overflowY: "auto",
+            borderColor: "rgba(225,29,72,0.55)",
+            padding: "24px",
+          }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "16px", alignItems: "flex-start", marginBottom: "18px" }}>
+              <div>
+                <div style={{
+                  color: "var(--alert)",
+                  fontSize: "12px",
+                  fontWeight: 800,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  marginBottom: "8px",
+                }}>
+                  Emergency Mode
+                </div>
+                <h2 style={{
+                  color: "var(--text-primary)",
+                  fontSize: "clamp(28px, 6vw, 44px)",
+                  lineHeight: 1.05,
+                  fontWeight: 800,
+                  margin: 0,
+                }}>
+                  What is happening right now?
+                </h2>
+              </div>
+              <button
+                onClick={() => setShowEmergency(false)}
+                aria-label="Close emergency mode"
+                className="icon-button"
+              >
+                ×
+              </button>
+            </div>
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gap: "10px",
+              marginBottom: "18px",
+            }}>
+              {emergencyOptions.map((option) => (
+                <button
+                  key={option}
+                  style={{
+                    minHeight: "58px",
+                    padding: "12px 14px",
+                    borderRadius: "14px",
+                    border: "1px solid rgba(225,29,72,0.38)",
+                    background: "rgba(225,29,72,0.10)",
+                    color: "var(--text-primary)",
+                    fontSize: "14px",
+                    fontWeight: 800,
+                    textAlign: "left",
+                  }}
+                >
+                  {option}
+                </button>
+              ))}
+            </div>
+
+            <div style={{
+              border: "1px solid var(--border)",
+              borderLeft: "4px solid var(--alert)",
+              borderRadius: "16px",
+              background: "var(--bg-secondary)",
+              padding: "16px",
+              marginBottom: "18px",
+            }}>
+              <div style={{ color: "var(--text-tertiary)", fontSize: "11px", fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", marginBottom: "8px" }}>
+                Recommended action
+              </div>
+              <p style={{ color: "var(--text-primary)", fontSize: "16px", fontWeight: 700, lineHeight: 1.55, margin: 0 }}>
+                Call emergency services now if there is severe pain, breathing trouble, heavy bleeding, loss of consciousness, stroke signs, or any immediate danger.
+              </p>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "10px" }}>
+              <a
+                href="tel:112"
+                style={{
+                  minHeight: "58px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                  borderRadius: "16px",
+                  background: "var(--alert)",
+                  color: "white",
+                  fontSize: "17px",
+                  fontWeight: 800,
+                  textDecoration: "none",
+                }}
+              >
+                CALL EMERGENCY SERVICES · 112
+              </a>
+              <button
+                onClick={() => {
+                  setShowEmergency(false);
+                  handleSOS();
+                }}
+                style={{
+                  minHeight: "48px",
+                  border: "1px solid var(--border)",
+                  borderRadius: "14px",
+                  background: "var(--bg-card)",
+                  color: "var(--text-primary)",
+                  fontSize: "14px",
+                  fontWeight: 800,
+                }}
+              >
+                Send SOS to emergency contacts
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Setup modal */}
       {showSetup && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 300,
-          background: "rgba(0,0,0,0.5)",
-          display: "flex", alignItems: "flex-end", justifyContent: "center",
+          background: "rgba(7,17,31,0.78)",
+          backdropFilter: "blur(12px)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "16px",
         }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowSetup(false); }}
         >
-          <div style={{
-            background: "var(--bg-card)", borderRadius: "20px 20px 0 0",
+          <div className="premium-card" style={{
+            borderRadius: "24px",
             padding: "1.5rem 1.25rem 2rem", width: "100%",
             maxWidth: "480px", maxHeight: "85vh", overflowY: "auto",
           }}>
@@ -215,13 +360,14 @@ export default function SOSButton({ lang, userLocation, forceOpen, onClose }) {
       {showConfirm && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 300,
-          background: "rgba(0,0,0,0.6)",
+          background: "rgba(7,17,31,0.82)",
+          backdropFilter: "blur(12px)",
           display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem",
         }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowConfirm(false); }}
         >
-          <div style={{
-            background: "var(--bg-card)", borderRadius: "16px",
+          <div className="premium-card" style={{
+            borderRadius: "24px",
             padding: "1.5rem", width: "100%", maxWidth: "360px",
           }}>
             <div style={{

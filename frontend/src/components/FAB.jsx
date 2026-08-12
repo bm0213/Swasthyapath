@@ -92,27 +92,28 @@ export default function FAB({ lang, userLocation, onSOS, onChat }) {
         ))}
       </div>
 
-      {/* Main FAB */}
+      {/* Main FAB SOS Button */}
       <button
         onClick={() => setOpen((p) => !p)}
+        aria-label="Emergency SOS trigger"
         style={{
           position: "fixed", bottom: "24px", right: "20px",
           zIndex: 200,
-          width: "52px", height: "52px", borderRadius: "50%",
+          height: "50px", padding: "0 18px", borderRadius: "25px",
           background: open ? "#1B4F8A" : "var(--alert)",
           border: "none", color: "white",
-          display: "flex", alignItems: "center", justifyContent: "center",
+          display: "flex", alignItems: "center", gap: "8px",
           cursor: "pointer",
-          boxShadow: "0 4px 16px rgba(232,64,64,0.4)",
+          boxShadow: "0 4px 18px rgba(225,29,72,0.4)",
           animation: open ? "none" : "fabPulse 3s infinite",
           transition: "background 0.2s, transform 0.2s",
-          transform: open ? "rotate(45deg)" : "rotate(0deg)",
         }}
       >
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-          <path d="M12 4v16M4 12h16" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-        </svg>
+        <span style={{ fontSize: "16px" }}>🚨</span>
+        <span style={{ fontSize: "14px", fontWeight: "800", letterSpacing: "0.06em" }}>
+          {open ? "CLOSE" : "SOS"}
+        </span>
       </button>
     </>
   );
-}
+}

@@ -1,45 +1,46 @@
+import React from "react";
 import strings from "../utils/strings";
 
 export default function EmergencyBar({ lang }) {
-  const s = strings[lang];
+  const s = strings[lang] || strings["en"];
   return (
-    <div style={{
-      display: "flex", alignItems: "center", justifyContent: "space-between",
-      background: "var(--bg-card)",
-      border: "1px solid var(--border)",
-      borderLeft: "3px solid var(--alert)",
-      borderRadius: "10px",
-      padding: "10px 14px",
-      marginBottom: "1rem",
-      boxShadow: "var(--shadow-sm)",
-    }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <div className="emergency-command-bar">
+      <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
         <div style={{
           width: "8px", height: "8px", borderRadius: "50%",
           background: "var(--alert)",
+          boxShadow: "0 0 10px rgba(225, 29, 72, 0.6)",
           animation: "fabPulse 2s infinite",
+          flexShrink: 0,
         }} />
-        <span style={{
-          fontSize: "12px", fontWeight: "600",
-          color: "var(--text-primary)", letterSpacing: "0.02em",
-        }}>
-          {s.emergencyLabel}
-        </span>
+        <div>
+          <div style={{
+            fontSize: "11px", fontWeight: "800",
+            color: "var(--alert)", letterSpacing: "0.1em",
+            textTransform: "uppercase", lineHeight: 1.1,
+          }}>
+            {s.emergencyLabel || "NATIONAL EMERGENCY"}
+          </div>
+          <div style={{
+            fontSize: "12px", fontWeight: "500",
+            color: "var(--text-secondary)", marginTop: "2px",
+          }}>
+            {lang === "hi" ? "24/7 राष्ट्रीय आपातकालीन सेवा तुरंत उपलब्ध" : "Emergency services available 24/7 nationwide"}
+          </div>
+        </div>
       </div>
-      <a href="tel:112" style={{
-        display: "flex", alignItems: "center", gap: "6px",
-        textDecoration: "none",
-        background: "var(--alert)",
-        color: "white",
-        padding: "4px 12px", borderRadius: "20px",
-        fontSize: "13px", fontWeight: "700",
-        letterSpacing: "0.05em",
-      }}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
-          <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-        </svg>
-        112
+
+      <a href="tel:112" className="emergency-call-btn">
+        <span style={{ fontSize: "16px", fontWeight: "800", letterSpacing: "0.04em" }}>112</span>
+        <span style={{
+          fontSize: "11px", fontWeight: "800",
+          letterSpacing: "0.08em", textTransform: "uppercase",
+          padding: "4px 8px", background: "rgba(255,255,255,0.2)",
+          borderRadius: "6px",
+        }}>
+          CALL NOW
+        </span>
       </a>
     </div>
   );
-}
+}

@@ -254,7 +254,7 @@ function startSharingLocation(rid, socket, urole) {
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div style={{
               width: "36px", height: "36px", borderRadius: "50%",
-              background: "#E6F1FB", display: "flex",
+              background: "var(--teal-light)", display: "flex",
               alignItems: "center", justifyContent: "center", fontSize: "18px",
             }}>
               💬
@@ -290,9 +290,9 @@ function startSharingLocation(rid, socket, urole) {
 {["patient", "doctor", "ambulance"].map((r) => (
                 <button key={r} onClick={() => setRole(r)} style={{
                   flex: 1, padding: "10px",
-                  border: role === r ? "1.5px solid #185FA5" : "0.5px solid var(--border)",
-                  borderRadius: "10px", background: role === r ? "#E6F1FB" : "transparent",
-                  color: role === r ? "#0C447C" : "var(--text-secondary)",
+                  border: role === r ? "1.5px solid var(--teal)" : "0.5px solid var(--border)",
+                  borderRadius: "10px", background: role === r ? "var(--teal-light)" : "transparent",
+                  color: role === r ? "var(--text-primary)" : "var(--text-secondary)",
                   fontSize: "13px", fontWeight: role === r ? "500" : "400", cursor: "pointer",
                 }}>
                 {r === "patient" ? `🤒 ${str.asPatient}` : r === "doctor" ? `👨‍⚕️ ${str.asDoctor}` : `🚑 Ambulance`}
@@ -315,7 +315,7 @@ function startSharingLocation(rid, socket, urole) {
 
             <button onClick={handleCreate} disabled={!userName.trim()} style={{
               width: "100%", padding: "12px",
-              background: userName.trim() ? "#185FA5" : "var(--border)",
+              background: userName.trim() ? "var(--teal)" : "var(--border)",
               color: userName.trim() ? "white" : "var(--text-tertiary)",
               border: "none", borderRadius: "10px", fontSize: "14px", fontWeight: "500",
               cursor: userName.trim() ? "pointer" : "not-allowed", marginBottom: "10px",
@@ -373,7 +373,7 @@ function startSharingLocation(rid, socket, urole) {
                   </div>
                   <button onClick={copyRoomId} style={{
                     padding: "6px 12px", fontSize: "12px", fontWeight: "500",
-                    background: copied ? "var(--teal)" : "#185FA5",
+                    background: copied ? "var(--teal)" : "var(--teal)",
                     color: "white", border: "none", borderRadius: "8px", cursor: "pointer",
                   }}>
                     {copied ? str.copied : str.copyCode}
@@ -409,7 +409,7 @@ function startSharingLocation(rid, socket, urole) {
                     {!isMe && (
                       <div style={{
                         width: "28px", height: "28px", borderRadius: "50%",
-                        background: msg.role === "doctor" ? "#E6F1FB" : "#FAECE7",
+                        background: msg.role === "doctor" ? "var(--teal-light)" : "var(--alert-light)",
                         display: "flex", alignItems: "center", justifyContent: "center",
                         fontSize: "14px", flexShrink: 0,
                       }}>
@@ -424,7 +424,7 @@ function startSharingLocation(rid, socket, urole) {
                       )}
                       <div style={{
                         padding: "8px 12px",
-                        background: isMe ? "#185FA5" : "var(--bg-secondary)",
+                        background: isMe ? "var(--teal)" : "var(--bg-secondary)",
                         color: isMe ? "white" : "var(--text-primary)",
                         borderRadius: isMe ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
                         fontSize: "14px", lineHeight: "1.5",
@@ -471,7 +471,7 @@ function startSharingLocation(rid, socket, urole) {
               }}
               style={{
                 width: "42px", height: "42px", borderRadius: "50%",
-                background: "#185FA5", border: "none",
+                background: "var(--teal)", border: "none",
                 color: "white", fontSize: "18px", cursor: "pointer",
                 display: role === "patient" ? "flex" : "none",
                 alignItems: "center", justifyContent: "center", flexShrink: 0,
@@ -480,7 +480,7 @@ function startSharingLocation(rid, socket, urole) {
               </button>
               <button onClick={handleSend} disabled={!newMessage.trim()} style={{
                 width: "42px", height: "42px", borderRadius: "50%",
-                background: newMessage.trim() ? "#185FA5" : "var(--border)",
+                background: newMessage.trim() ? "var(--teal)" : "var(--border)",
                 border: "none", color: "white", fontSize: "16px",
                 cursor: newMessage.trim() ? "pointer" : "not-allowed",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
