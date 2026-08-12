@@ -1,81 +1,152 @@
-# 🏥 SwasthyaPath — AI-Powered Emergency Response System
+# SwasthyaPath — AI-Powered Emergency Medical Command Center
 
 <div align="center">
 
-![SwasthyaPath](https://img.shields.io/badge/SwasthyaPath-Emergency%20Response-red?style=for-the-badge)
-![React](https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react)
-![Node.js](https://img.shields.io/badge/Node.js-Express-green?style=for-the-badge&logo=node.js)
-![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-brightgreen?style=for-the-badge&logo=mongodb)
-![Claude AI](https://img.shields.io/badge/Claude-Anthropic%20AI-orange?style=for-the-badge)
+![SwasthyaPath](https://img.shields.io/badge/SwasthyaPath-Medical%20Command%20Center-16A579?style=for-the-badge&labelColor=07111F)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white&labelColor=07111F)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white&labelColor=07111F)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=for-the-badge&logo=node.js&logoColor=white&labelColor=07111F)
+![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white&labelColor=07111F)
+![Claude AI](https://img.shields.io/badge/Claude-Anthropic%20AI-D4A853?style=for-the-badge&labelColor=07111F)
+![MIT License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge&labelColor=07111F)
 
-**An AI-powered emergency medical triage system designed for rural India.**  
-Describe symptoms in any language → Get instant AI triage → Find the nearest hospital.
+**A premium AI-powered emergency medical triage system built for India.**  
+Describe your symptoms in any language → Get instant AI triage → Find the nearest hospital.
 
-🌐 **Live Demo:** [swasthyapath-orcin.vercel.app](https://swasthyapath-orcin.vercel.app)
+🌐 **Live Demo:** [swasthyapath-mu.vercel.app](https://swasthyapath-mu.vercel.app)
 
 </div>
 
 ---
 
-## ✨ Features
+## Overview
 
-- 🤖 **AI Triage** — Claude AI analyzes symptoms in multiple languages and assesses severity (Critical / Urgent / Moderate)
-- 🗺️ **Real GPS + Live Map** — Finds nearest hospitals using real-time location with Leaflet maps
-- 🚑 **Ambulance Live Tracking** — Patient and ambulance share live locations visible on the map in real time
-- 💬 **Doctor Chat** — Real-time chat between patient and volunteer doctor via Socket.io rooms
-- 📹 **Video Call** — WebRTC-powered video consultation between patient and doctor
-- 🩹 **First Aid Guide** — Step-by-step offline first aid for 10 emergencies (Heart Attack, Snake Bite, Burns, Drowning, Choking, Fracture, Seizure, Bleeding, Unconscious, Road Accident)
-- 📋 **My Triage History** — Users can view their past triage records stored locally
-- 🔐 **Admin Dashboard** — Protected admin login with full stats, severity breakdown, symptom trends and recent activity
-- 📴 **Offline Mode** — Cached hospital data and First Aid Guide work without internet connection
-- 🌍 **Multi-language** — Supports English, Hindi, Tamil, Telugu, Bengali, Marathi
-- 🆘 **SOS Button** — One-tap emergency call with location sharing
-- 📱 **PWA Ready** — Installable on mobile devices
+SwasthyaPath is a full-stack emergency healthcare platform that bridges the gap between patients and emergency medical care — especially in underserved and rural areas. It combines AI-powered symptom triage, real-time GPS hospital matching, live ambulance tracking, video consultations, and a comprehensive offline-capable first aid guide into a single premium interface.
+
+The UI is designed to the standard of Apple Health × Linear — clinical, calm, and immediately usable under stress.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
+
+### 🤖 AI Emergency Triage
+- Submit symptoms in **any of 6 languages** (English, Hindi, Tamil, Telugu, Bengali, Marathi)
+- Claude AI analyzes symptoms and returns a **severity classification**: `Critical` / `Urgent` / `Moderate`
+- Provides a clinical summary, recommended specialty departments (e.g. `ICU`, `CARDIOLOGY`, `NEUROLOGY`), and immediate action guidance
+- Every triage result is **auto-saved to local history**
+
+### 🗺️ Real-Time Hospital Finder
+- Uses the browser's **GPS API** to detect current location
+- Fetches and ranks nearby hospitals via OpenStreetMap Overpass API
+- Displays results on an **interactive Leaflet map** with custom markers
+- Falls back to **cached hospital data** when offline
+- Shows distance, specialties, and contact details for each hospital
+
+### 🚑 Live Ambulance Tracking
+- Patient and ambulance share **real-time GPS coordinates** via Socket.io
+- Both locations are rendered live on the shared map
+- Updates are broadcast without page refresh
+
+### 💬 Doctor Chat + Video Consultation
+- Real-time text chat between patient and volunteer doctor using **Socket.io rooms**
+- **WebRTC video call** with offer/answer/ICE candidate signaling via the server
+- Triage result is automatically shared in the chat context
+
+### 🩺 Premium First Aid Guide
+- Step-by-step emergency procedures for **10 critical scenarios**:
+  `Heart Attack` · `Snake Bite` · `Burns` · `Drowning` · `Choking` · `Fracture` · `Seizure` · `Bleeding` · `Unconscious Person` · `Road Accident`
+- Full **search + category filter** system
+- Severity badge system (`Life-Threatening` / `Serious` / `Time-Sensitive`)
+- Numbered clinical step timeline with action-oriented instructions
+- Works **100% offline** — no network required
+
+### 🪪 Digital Medical ID
+- Persistent **emergency medical passport** stored in `localStorage`
+- Captures: blood type, allergies, chronic conditions, current medications, emergency contacts, organ donor status, insurance info
+- **Blood type focal display** for immediate first-responder identification
+- **Completeness progress bar** to encourage full profile completion
+- QR code payload modal for quick data export
+- 2-column responsive form editor
+
+### 📋 Triage History
+- Private timeline of all past emergency assessments
+- **Search** by symptoms, severity, or summary
+- **Filter tabs**: All · Critical · Urgent · Other
+- **Smart date grouping**: Today · Yesterday · This Week · date label
+- Per-record detail modal with full clinical assessment
+- Individual record deletion + two-step **Clear All** confirmation
+- All data stored locally — never leaves the device
+
+### ⚙️ Settings & Accessibility
+- **6-language switcher**: English, Hindi, Tamil, Telugu, Bengali, Marathi
+- **4-tier text size control** (Small → Extra Large) — scales the entire app via CSS zoom
+- Granular **notification preferences**: Emergency Alerts, Medicine Reminders, Hospital Updates
+- Alert behavior: Sound Alerts + Vibration toggles
+- Two-stage **Reset to Defaults** with confirmation
+- All preferences persist in `localStorage`
+
+### 🆘 SOS + FAB
+- One-tap **SOS button** with location sharing and emergency call
+- **Floating Action Button** for quick access to chat and SOS from any page
+
+### 🔐 Admin Dashboard
+- Protected admin login (session-based)
+- Full platform stats: total triages, severity breakdown, symptom trends, recent activity
+- Backend-powered with MongoDB Atlas
+
+### 📴 Offline Mode
+- Hospital data cached via `localStorage` after first successful fetch
+- First Aid Guide is completely static — fully functional with no internet
+- **OfflineBanner** component alerts users when the network drops
+
+### 📱 PWA Ready
+- Installable on mobile devices as a Progressive Web App
+
+---
+
+## Tech Stack
 
 ### Frontend
 | Technology | Purpose |
 |---|---|
-| React 18 + Vite | UI framework |
-| Leaflet + React-Leaflet | Interactive maps |
-| Socket.io Client | Real-time communication |
-| WebRTC | Video calls |
+| React 18 + Vite | UI framework and build tooling |
+| Vanilla CSS (custom design system) | Styling — no Tailwind or UI libraries |
+| Leaflet + React-Leaflet | Interactive GPS maps |
+| Socket.io Client | Real-time chat and live location |
+| WebRTC | Peer-to-peer video consultations |
+| Canvas API | Realistic ECG waveform animation |
 
 ### Backend
 | Technology | Purpose |
 |---|---|
 | Node.js + Express | REST API server |
-| Socket.io | Real-time rooms & chat |
-| Anthropic Claude AI | AI-powered symptom triage |
-| MongoDB Atlas + Mongoose | Persistent database |
-| Dotenv | Environment variables |
+| Socket.io | Real-time rooms, chat, and location events |
+| Anthropic Claude AI | AI-powered symptom triage engine |
+| MongoDB Atlas + Mongoose | Persistent triage history and admin stats |
 
 ### Deployment
 | Service | Purpose |
 |---|---|
 | Vercel | Frontend hosting |
-| Render | Backend hosting |
+| Render | Backend API hosting |
 | MongoDB Atlas | Cloud database |
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 | Service | URL |
 |---|---|
-| 🌐 Frontend | [swasthyapath-orcin.vercel.app](https://swasthyapath-orcin.vercel.app) |
+| 🌐 Frontend | [swasthyapath-mu.vercel.app](https://swasthyapath-mu.vercel.app) |
 | ⚙️ Backend API | [swasthyapath-backend.onrender.com](https://swasthyapath-backend.onrender.com) |
 
 ---
 
-## ⚙️ Local Setup
+## Local Setup
 
 ### Prerequisites
 - Node.js v18+
-- MongoDB Atlas account (free)
+- MongoDB Atlas account (free tier works)
 - Anthropic API key
 
 ### 1. Clone the repository
@@ -127,60 +198,76 @@ http://localhost:5173
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Swasthyapath/
 ├── backend/
 │   ├── routes/
-│   │   ├── triage.js        # AI triage endpoint
-│   │   ├── admin.js         # Admin stats + login endpoint
-│   │   └── hospitals.js     # Hospital proxy endpoint
-│   ├── db.js                # MongoDB connection + schemas
-│   ├── index.js             # Express + Socket.io server
+│   │   ├── triage.js          # AI triage endpoint (Claude API)
+│   │   ├── admin.js           # Admin login + stats endpoint
+│   │   └── hospitals.js       # Hospital proxy (OpenStreetMap Overpass)
+│   ├── db.js                  # MongoDB connection + Mongoose schemas
+│   ├── index.js               # Express server + Socket.io setup
 │   └── package.json
 │
 └── frontend/
     └── src/
         ├── components/
-        │   ├── AdminLogin.jsx      # Admin login page
-        │   ├── UserHistory.jsx     # User triage history
-        │   ├── DoctorChat.jsx      # Real-time chat + video call
-        │   ├── VideoCall.jsx       # WebRTC video call
-        │   ├── HospitalMap.jsx     # Leaflet map + ambulance tracking
-        │   ├── HospitalList.jsx    # Hospital results list
-        │   ├── SymptomInput.jsx    # Symptom input form
-        │   ├── TriageResult.jsx    # AI triage result display
-        │   ├── SOSButton.jsx       # Emergency SOS
-        │   └── ...
+        │   ├── Header.jsx          # Premium nav bar with ECG monitor, theme toggle, language selector
+        │   ├── LiveECGMonitor.jsx  # Realistic P-QRS-T ECG waveform animation (Canvas)
+        │   ├── EmergencyBar.jsx    # National emergency numbers top bar
+        │   ├── SymptomInput.jsx    # Symptom textarea with voice input
+        │   ├── TriageResult.jsx    # AI triage result card
+        │   ├── HospitalMap.jsx     # Leaflet map + live ambulance/patient pins
+        │   ├── HospitalList.jsx    # Ranked hospital results list
+        │   ├── HospitalCard.jsx    # Individual hospital card with actions
+        │   ├── UserHistory.jsx     # Private triage history timeline
+        │   ├── DoctorChat.jsx      # Real-time chat + WebRTC video call
+        │   ├── VideoCall.jsx       # WebRTC video component
+        │   ├── SOSButton.jsx       # Emergency SOS overlay
+        │   ├── FAB.jsx             # Floating action button
+        │   ├── AmbulanceButton.jsx # Ambulance live tracking button
+        │   ├── AdminLogin.jsx      # Protected admin login
+        │   ├── LoadingSpinner.jsx  # Loading state component
+        │   └── OfflineBanner.jsx   # Offline status banner
         ├── pages/
-        │   ├── AdminDashboard.jsx  # Admin stats dashboard (protected)
-        │   ├── FirstAid.jsx        # Offline first aid guide
-        │   └── Settings.jsx
+        │   ├── LandingPage.jsx     # Hero landing page
+        │   ├── FirstAid.jsx        # Offline-capable first aid guide (10 procedures)
+        │   ├── MedicalID.jsx       # Digital emergency medical passport
+        │   ├── Settings.jsx        # Accessibility + notification preferences
+        │   └── AdminDashboard.jsx  # Admin stats dashboard (protected)
         ├── utils/
-        │   ├── triage.js           # Claude AI API call
-        │   ├── socket.js           # Socket.io client
-        │   ├── location.js         # GPS utilities
+        │   ├── triage.js           # Claude AI API integration
+        │   ├── socket.js           # Socket.io client singleton
+        │   ├── location.js         # GPS + reverse geocoding utilities
         │   ├── fetchHospitals.js   # Hospital fetch via backend proxy
-        │   └── ...
-        └── App.jsx                 # Main app component
+        │   ├── matchHospitals.js   # Match hospitals to required specialties
+        │   ├── serviceWorker.js    # Online status + hospital cache helpers
+        │   └── strings.js          # Multi-language string translations
+        ├── data/                   # Static first aid procedure data
+        ├── App.jsx                 # Root component — routing, state, triage orchestration
+        ├── index.css               # Full design system (4000+ lines, custom CSS only)
+        └── main.jsx                # React entry point
 ```
 
 ---
 
-## 🌐 API Endpoints
+## API Reference
+
+### REST Endpoints
 
 | Method | Endpoint | Description |
 |---|---|---|
-| POST | `/api/triage` | Submit symptoms for AI triage |
-| POST | `/api/admin/login` | Admin login |
-| GET | `/api/admin/stats` | Get admin dashboard stats |
-| GET | `/api/hospitals/nearby` | Fetch nearby hospitals via proxy |
+| `POST` | `/api/triage` | Submit symptoms for AI triage analysis |
+| `POST` | `/api/admin/login` | Admin authentication |
+| `GET` | `/api/admin/stats` | Platform-wide triage statistics |
+| `GET` | `/api/hospitals/nearby` | Fetch nearby hospitals from OpenStreetMap |
 
 ### Triage Request
 ```json
 {
-  "symptoms": "Patient has severe chest pain and difficulty breathing",
+  "symptoms": "Severe chest pain and difficulty breathing for 20 minutes",
   "location": { "lat": 13.0827, "lng": 80.2707 }
 }
 ```
@@ -190,52 +277,90 @@ Swasthyapath/
 {
   "severity": "critical",
   "severityLabel": "Critical Emergency",
-  "summary": "Symptoms suggest a possible cardiac event.",
-  "facilities": ["ICU", "Cardiology", "Ventilator"],
-  "doNow": "Keep the patient calm and seated upright. Call 112 immediately."
+  "summary": "Symptoms are consistent with an acute cardiac event requiring immediate emergency care.",
+  "facilities": ["ICU", "CARDIOLOGY", "EMERGENCY"],
+  "doNow": "Keep the patient calm and seated upright. Do not give food or water. Call 112 immediately."
 }
 ```
 
 ---
 
-## 🔌 Socket.io Events
+## Socket.io Events
 
 | Event | Direction | Description |
 |---|---|---|
-| `join_room` | Client → Server | Join a chat room |
+| `join_room` | Client → Server | Join a patient-doctor room |
 | `send_message` | Client → Server | Send a chat message |
-| `ambulance_location` | Client → Server | Share ambulance GPS |
-| `patient_location` | Client → Server | Share patient GPS |
-| `call_request` | Client → Server | Request video call |
-| `call_accepted` | Client → Server | Accept video call |
-| `call_declined` | Client → Server | Decline video call |
-| `call_ended` | Client → Server | End video call |
-| `webrtc_offer/answer/ice` | Client → Server | WebRTC signaling |
+| `receive_message` | Server → Client | Receive a chat message |
+| `ambulance_location` | Client → Server | Share ambulance GPS coordinates |
+| `patient_location` | Client → Server | Share patient GPS coordinates |
+| `location_update` | Server → Client | Broadcast location to room |
+| `call_request` | Client → Server | Initiate a video call |
+| `call_accepted` | Client → Server | Accept an incoming video call |
+| `call_declined` | Client → Server | Decline a video call |
+| `call_ended` | Client → Server | End an active video call |
+| `webrtc_offer` | Client → Server | WebRTC SDP offer |
+| `webrtc_answer` | Client → Server | WebRTC SDP answer |
+| `webrtc_ice` | Client → Server | WebRTC ICE candidate |
 
 ---
 
-## 🤝 Contributing
+## localStorage Keys
+
+| Key | Purpose |
+|---|---|
+| `swasthya-triage-history` | Array of past triage assessment records |
+| `swasthya-fontsize` | Text size preference (`small` / `medium` / `large` / `xlarge`) |
+| `swasthya-notifications` | Notification preference object |
+| `swasthya-lang` | Selected language code (`en`, `hi`, `ta`, `te`, `bn`, `mr`) |
+| `swasthya-medicalid` | User's Digital Medical ID data |
+| `swasthya-hospitals-cache` | Cached nearby hospital results (for offline use) |
+
+---
+
+## Design System
+
+SwasthyaPath uses a fully custom CSS design system — no Tailwind, no component library. All styling is written in `index.css` (~85KB) with CSS custom properties.
+
+### Color Palette
+| Token | Value | Usage |
+|---|---|---|
+| `--teal` | `#16A579` | Primary emerald — CTAs, active states, success |
+| `--alert` | `#E11D48` | Emergency red — critical severity, errors |
+| `--amber` | `#F59E0B` | Warning amber — urgent severity |
+| `--bg` | `#07111F` | Dark mode background |
+| `--bg-card` | `#122238` | Dark mode card surface |
+| `--bg-secondary` | `#0D1A2B` | Dark mode secondary surface |
+| `--text-primary` | `#F8FAFC` | Primary text (dark mode) |
+| `--text-secondary` | `#94A3B8` | Secondary text |
+
+### Theme
+Supports **Dark Mode** (default) and **Light Mode** toggled via `data-theme="light"` on `<html>`.
+
+---
+
+## Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'Add your feature'`
+4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
 
 ---
 
-## 📄 License
+## License
 
 This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **bm0213** — [GitHub](https://github.com/bm0213)
 
 ---
 
 <div align="center">
-Made with ❤️ for rural India's emergency healthcare
+  Built with care for India's emergency healthcare infrastructure.
 </div>
