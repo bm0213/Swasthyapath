@@ -1,6 +1,6 @@
 import { calculateDistance } from "./location";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://swasthyapath-backend.onrender.com";
 
 export async function fetchNearbyHospitals(lat, lng, radiusMeters = 10000) {
   try {
