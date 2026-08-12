@@ -13,7 +13,7 @@
 **A premium AI-powered emergency medical triage system built for India.**  
 Describe your symptoms in any language → Get instant AI triage → Find the nearest hospital.
 
-🌐 **Live Demo:** [swasthyapath-mu.vercel.app](https://swasthyapath-mu.vercel.app)
+🌐 **Live Demo:** [swasthyapath-orcin.vercel.app](https://swasthyapath-orcin.vercel.app)
 
 </div>
 
@@ -137,7 +137,7 @@ The UI is designed to the standard of Apple Health × Linear — clinical, calm,
 
 | Service | URL |
 |---|---|
-| 🌐 Frontend | [swasthyapath-mu.vercel.app](https://swasthyapath-mu.vercel.app) |
+| 🌐 Frontend | [swasthyapath-orcin.vercel.app](https://swasthyapath-orcin.vercel.app) |
 | ⚙️ Backend API | [swasthyapath-backend.onrender.com](https://swasthyapath-backend.onrender.com) |
 
 ---
