@@ -35,20 +35,18 @@ function StatusPill({ icon, label, value, color, onClick }) {
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
         borderRadius: "var(--radius-md)",
-        padding: "12px 14px",
+        padding: "10px 12px",
         display: "flex", alignItems: "center", gap: "10px",
         boxShadow: "var(--shadow-xs)",
         cursor: onClick ? "pointer" : "default",
         transition: "all var(--transition)",
       }}
-      onMouseEnter={(e) => { if (onClick) e.currentTarget.style.boxShadow = "var(--shadow-sm)"; }}
-      onMouseLeave={(e) => { if (onClick) e.currentTarget.style.boxShadow = "var(--shadow-xs)"; }}
     >
       <div style={{
-        width: "34px", height: "34px", borderRadius: "9px",
+        width: "30px", height: "30px", borderRadius: "8px",
         background: "var(--bg-secondary)",
         display: "flex", alignItems: "center",
-        justifyContent: "center", fontSize: "15px", flexShrink: 0,
+        justifyContent: "center", fontSize: "14px", flexShrink: 0,
       }}>
         {icon}
       </div>
@@ -96,8 +94,18 @@ export default function App() {
   const isOnline = useOnlineStatus();
 
   React.useEffect(() => {
+    // Font size zoom map — scales entire page including all px-based values
+    const zoomMap = { small: 0.85, medium: 1.0, large: 1.15, xlarge: 1.30 };
+    const legacyMap = { "14px": "small", "15px": "medium", "17px": "large", "19px": "xlarge" };
     const savedFont = localStorage.getItem("swasthya-fontsize");
-    if (savedFont) document.documentElement.style.fontSize = savedFont;
+    if (savedFont) {
+      const key = legacyMap[savedFont] || savedFont;
+      document.documentElement.style.zoom = zoomMap[key] ?? 1.0;
+      // Normalize legacy px values to keys in storage
+      if (legacyMap[savedFont]) localStorage.setItem("swasthya-fontsize", key);
+    } else {
+      document.documentElement.style.zoom = 1.0;
+    }
     const savedLang = localStorage.getItem("swasthya-lang");
     if (savedLang) setLang(savedLang);
   }, []);
@@ -190,7 +198,7 @@ export default function App() {
       )}
 
       {page === "admin" && (
-        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
+        <div className="app-shell">
           {isAdminAuthenticated ? (
             <>
               <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
@@ -220,37 +228,23 @@ export default function App() {
       )}
 
       {page === "home" && (
-        <div style={{
-          maxWidth: "100%", margin: "0 auto",
+        <div className="app-shell triage-layout" style={{
+          maxWidth: "1140px", margin: "0 auto",
           padding: "1.5rem 1.5rem 6rem",
           display: "grid",
-          gridTemplateColumns: "240px 1fr",
-          gap: "1.5rem",
+          gridTemplateColumns: "260px 1fr",
+          gap: "1.75rem",
           alignItems: "start",
         }}>
-          <aside style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          {/* Live Emergency Command Sidebar */}
+          <aside style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
 
-            <div style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              borderRadius: "var(--radius-lg)",
-              overflow: "hidden",
-              boxShadow: "var(--shadow-sm)",
-            }}>
-              <div style={{
-                padding: "12px 14px",
-                borderBottom: "1px solid var(--border)",
-                background: "var(--bg-secondary)",
-              }}>
-                <span style={{
-                  fontSize: "10px", fontWeight: "700",
-                  color: "var(--text-tertiary)",
-                  textTransform: "uppercase", letterSpacing: "0.1em",
-                }}>
-                  Status
-                </span>
+            {/* System Status Panel */}
+            <div className="status-panel-card">
+              <div className="status-panel-header">
+                <span className="status-panel-title">SYSTEM STATUS</span>
               </div>
-              <div style={{ padding: "10px", display: "flex", flexDirection: "column", gap: "6px" }}>
+              <div style={{ padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
                 <StatusPill
                   icon="🌐" label="Network"
                   value={isOnline ? "Online" : "Offline"}
@@ -264,60 +258,46 @@ export default function App() {
                   color={userLocation ? "var(--teal)" : "var(--text-tertiary)"}
                 />
                 <StatusPill
-                  icon="🏥" label="Hospitals"
-                  value={hospitals.length > 0 ? `${hospitals.length} found nearby` : "Search first"}
+                  icon="🏥" label="Hospital Search"
+                  value={hospitals.length > 0 ? `${hospitals.length} care centers` : "Ready"}
                   color={hospitals.length > 0 ? "var(--teal)" : "var(--text-tertiary)"}
                 />
               </div>
             </div>
 
-            <div style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              borderRadius: "var(--radius-lg)",
-              overflow: "hidden",
-              boxShadow: "var(--shadow-sm)",
-            }}>
-              <div style={{
-                padding: "12px 14px",
-                borderBottom: "1px solid var(--border)",
-                background: "var(--bg-secondary)",
-              }}>
-                <span style={{
-                  fontSize: "10px", fontWeight: "700",
-                  color: "var(--text-tertiary)",
-                  textTransform: "uppercase", letterSpacing: "0.1em",
-                }}>
-                  How to use
-                </span>
+            {/* Quick Guide */}
+            <div className="status-panel-card">
+              <div className="status-panel-header">
+                <span className="status-panel-title">QUICK GUIDE</span>
               </div>
-              <div style={{ padding: "12px 14px" }}>
+              <div style={{ padding: "14px 16px" }}>
                 {[
-                  { step: "1", text: "Describe symptoms in your language" },
-                  { step: "2", text: "Allow location when prompted" },
-                  { step: "3", text: "Get nearest hospital match" },
-                  { step: "4", text: "Call or get directions" },
+                  { step: "01", text: "Describe symptoms in your words" },
+                  { step: "02", text: "Enable GPS location access" },
+                  { step: "03", text: "Find nearest care center match" },
+                  { step: "04", text: "Call 112 or get instant directions" },
                 ].map((s, i, arr) => (
                   <div key={s.step} style={{
-                    display: "flex", gap: "10px",
+                    display: "flex", gap: "12px",
                     alignItems: "flex-start",
-                    paddingBottom: i < arr.length - 1 ? "10px" : "0",
-                    marginBottom: i < arr.length - 1 ? "10px" : "0",
+                    paddingBottom: i < arr.length - 1 ? "12px" : "0",
+                    marginBottom: i < arr.length - 1 ? "12px" : "0",
                     borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none",
                   }}>
-                    <div style={{
-                      width: "22px", height: "22px", borderRadius: "50%",
-                      background: "var(--navy)", color: "white",
-                      fontSize: "10px", fontWeight: "700",
-                      display: "flex", alignItems: "center",
-                      justifyContent: "center", flexShrink: 0,
+                    <span style={{
+                      fontSize: "11px",
+                      fontWeight: "800",
+                      color: "var(--teal-mid)",
+                      fontFamily: "var(--font-mono)",
+                      letterSpacing: "0.05em",
+                      flexShrink: 0,
+                      paddingTop: "1px",
                     }}>
                       {s.step}
-                    </div>
+                    </span>
                     <span style={{
                       fontSize: "12px", color: "var(--text-secondary)",
-                      lineHeight: "1.55", paddingTop: "2px",
-                      letterSpacing: "-0.01em",
+                      lineHeight: "1.5", fontWeight: "500",
                     }}>
                       {s.text}
                     </span>
@@ -326,33 +306,18 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              borderRadius: "var(--radius-lg)",
-              overflow: "hidden",
-              boxShadow: "var(--shadow-sm)",
-            }}>
-              <div style={{
-                padding: "12px 14px",
-                borderBottom: "1px solid var(--border)",
-                background: "var(--bg-secondary)",
-              }}>
-                <span style={{
-                  fontSize: "10px", fontWeight: "700",
-                  color: "var(--text-tertiary)",
-                  textTransform: "uppercase", letterSpacing: "0.1em",
-                }}>
-                  Emergency Numbers
-                </span>
+            {/* Emergency Numbers */}
+            <div className="status-panel-card">
+              <div className="status-panel-header">
+                <span className="status-panel-title">EMERGENCY NUMBERS</span>
               </div>
-              <div style={{ padding: "4px 14px" }}>
+              <div style={{ padding: "6px 16px" }}>
                 {[
-                  { label: "National Emergency", num: "112", color: "#EF4444" },
-                  { label: "Ambulance", num: "108", color: "var(--teal)" },
-                  { label: "Police", num: "100", color: "#3B82F6" },
-                  { label: "Fire", num: "101", color: "#F97316" },
-                  { label: "Women Helpline", num: "1091", color: "#8B5CF6" },
+                  { label: "National Emergency", num: "112", isCritical: true },
+                  { label: "Ambulance", num: "108", isCritical: false },
+                  { label: "Police", num: "100", isCritical: false },
+                  { label: "Fire Services", num: "101", isCritical: false },
+                  { label: "Women Helpline", num: "1091", isCritical: false },
                 ].map((e, i, arr) => (
                   <a
                     key={e.num}
@@ -362,64 +327,57 @@ export default function App() {
                       alignItems: "center", padding: "10px 0",
                       borderBottom: i < arr.length - 1 ? "1px solid var(--border)" : "none",
                       textDecoration: "none",
-                      transition: "opacity var(--transition)",
                     }}
-                    onMouseEnter={(el) => el.currentTarget.style.opacity = "0.65"}
-                    onMouseLeave={(el) => el.currentTarget.style.opacity = "1"}
                   >
-                    <span style={{
-                      fontSize: "12px", color: "var(--text-secondary)",
-                      letterSpacing: "-0.01em",
-                    }}>
+                    <span style={{ fontSize: "12px", color: "var(--text-secondary)", fontWeight: "500" }}>
                       {e.label}
                     </span>
                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                       <span style={{
-                        fontSize: "15px", fontWeight: "700", color: e.color,
+                        fontSize: "14px",
+                        fontWeight: "800",
+                        color: e.isCritical ? "var(--alert)" : "var(--text-primary)",
                         fontFamily: "var(--font-mono)",
-                        letterSpacing: "0.05em",
                       }}>
                         {e.num}
                       </span>
-                      <div style={{
-                        width: "20px", height: "20px", borderRadius: "50%",
-                        background: e.color + "15",
-                        display: "flex", alignItems: "center", justifyContent: "center",
+                      <span style={{
+                        fontSize: "11px",
+                        fontWeight: "700",
+                        color: e.isCritical ? "var(--alert)" : "var(--teal-mid)",
                       }}>
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill={e.color}>
-                          <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
-                        </svg>
-                      </div>
+                        Call →
+                      </span>
                     </div>
                   </a>
                 ))}
               </div>
             </div>
 
+            {/* Quick Tip */}
             <div style={{
               background: "var(--teal-light)",
-              border: "1px solid var(--teal)30",
-              borderLeft: "3px solid var(--teal)",
-              borderRadius: "var(--radius-md)",
-              padding: "12px 14px",
+              border: "1px solid rgba(22, 165, 121, 0.25)",
+              borderRadius: "12px",
+              padding: "14px",
             }}>
               <div style={{
-                fontSize: "10px", fontWeight: "700", color: "var(--teal)",
+                fontSize: "10px", fontWeight: "800", color: "var(--teal-mid)",
                 textTransform: "uppercase", letterSpacing: "0.1em",
-                marginBottom: "6px",
+                marginBottom: "4px",
               }}>
-                💡 Quick tip
+                💡 STABILIZATION TIP
               </div>
               <p style={{
-                fontSize: "11px", color: "var(--text-secondary)",
-                lineHeight: "1.65", margin: 0, letterSpacing: "-0.01em",
+                fontSize: "12px", color: "var(--text-secondary)",
+                lineHeight: "1.55", margin: 0,
               }}>
-                Keep the patient calm. Do not give water or food until a doctor advises.
-                Stay on the line with emergency services.
+                Keep the patient calm and warm. Do not administer food or water until medical personnel evaluate.
               </p>
             </div>
           </aside>
 
+          {/* Main Hero Command Content */}
           <main>
             <EmergencyBar lang={lang} />
             <OfflineBanner
@@ -429,81 +387,51 @@ export default function App() {
 
             {userLocation && (
               <div style={{
-                display: "inline-flex", alignItems: "center", gap: "6px",
-                fontSize: "11px", fontWeight: "600",
-                color: "var(--teal)", background: "var(--teal-light)",
-                border: "1px solid var(--teal)20",
-                padding: "5px 12px", borderRadius: "20px",
-                marginBottom: "14px", letterSpacing: "-0.01em",
+                display: "inline-flex", alignItems: "center", gap: "8px",
+                fontSize: "11px", fontWeight: "700",
+                color: "var(--teal-mid)", background: "var(--teal-light)",
+                border: "1px solid rgba(22, 165, 121, 0.25)",
+                padding: "6px 14px", borderRadius: "20px",
+                marginBottom: "16px", letterSpacing: "0.02em",
               }}>
                 <div style={{
                   width: "6px", height: "6px", borderRadius: "50%",
                   background: "var(--teal)",
                 }} />
                 {locationName
-                  ? `📍 ${locationName}${userLocation.accuracy ? ` · ±${Math.round(userLocation.accuracy)}m` : ""}`
+                  ? `📍 GPS · ${locationName}${userLocation.accuracy ? ` (±${Math.round(userLocation.accuracy)}m)` : ""}`
                   : `GPS · ${userLocation.lat.toFixed(3)}, ${userLocation.lng.toFixed(3)}`}
               </div>
             )}
 
             {!triageResult && !isLoading && (
-              <div style={{
-                background: "var(--bg-card)",
-                border: "1px solid var(--border)",
-                borderRadius: "var(--radius-lg)",
-                padding: "1.5rem",
-                marginBottom: "1.25rem",
-                boxShadow: "var(--shadow-sm)",
-                display: "flex", gap: "16px", alignItems: "flex-start",
-              }}>
+              <div className="hero-tool-card">
                 <div style={{
-                  width: "48px", height: "48px", borderRadius: "12px",
-                  background: "linear-gradient(135deg, #0B7A5E 0%, #0E9B77 100%)",
-                  flexShrink: 0,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "0 2px 8px rgba(11,122,94,0.3)",
+                  fontSize: "22px",
+                  fontWeight: "800",
+                  color: "var(--text-primary)",
+                  letterSpacing: "-0.02em",
+                  marginBottom: "8px",
                 }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 4v16M4 12h16" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-                  </svg>
+                  FIND THE NEAREST HOSPITAL
                 </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{
-                    fontSize: "16px", fontWeight: "700",
-                    color: "var(--text-primary)", marginBottom: "6px",
-                    letterSpacing: "-0.3px",
-                    fontFamily: "var(--font-display)",
-                  }}>
-                    Emergency Hospital Finder
-                  </div>
-                  <p style={{
-                    fontSize: "13px", color: "var(--text-secondary)",
-                    lineHeight: "1.65", margin: "0 0 12px",
-                    letterSpacing: "-0.01em",
-                  }}>
-                    Describe symptoms in any language. Claude AI assesses severity,
-                    identifies required facilities and finds the nearest hospital in seconds.
-                  </p>
-                  <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    {[
-                      { label: "AI triage", color: "#3B82F6" },
-                      { label: "Real GPS", color: "var(--teal)" },
-                      { label: "Live map", color: "#8B5CF6" },
-                      { label: "Offline mode", color: "#F97316" },
-                      { label: "6 languages", color: "#EC4899" },
-                    ].map((f) => (
-                      <span key={f.label} style={{
-                        fontSize: "11px", fontWeight: "600",
-                        color: f.color,
-                        background: f.color + "12",
-                        border: `1px solid ${f.color}25`,
-                        padding: "3px 10px", borderRadius: "20px",
-                        letterSpacing: "-0.01em",
-                      }}>
-                        {f.label}
-                      </span>
-                    ))}
-                  </div>
+                <p style={{
+                  fontSize: "14px",
+                  color: "var(--text-secondary)",
+                  lineHeight: "1.6",
+                  margin: "0 0 16px",
+                  maxWidth: "600px",
+                }}>
+                  Describe what's happening. We'll assess the situation and help identify appropriate care centers in seconds.
+                </p>
+
+                {/* Unified Capability Metadata Pills */}
+                <div className="capability-pill-list">
+                  {["AI TRIAGE", "REAL GPS", "LIVE MAP", "OFFLINE MODE", "6 LANGUAGES"].map((cap) => (
+                    <span key={cap} className="capability-pill">
+                      {cap}
+                    </span>
+                  ))}
                 </div>
               </div>
             )}
@@ -546,7 +474,7 @@ export default function App() {
                   stroke="var(--alert)" strokeWidth="2"
                   style={{ flexShrink: 0, marginTop: "2px" }}>
                   <circle cx="12" cy="12" r="10"/>
-                  <line x1="12" y1="8" x2="12" y2="12"/>
+                  <line x1="12" y1="8" x2="12"/>
                   <line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
                 <div>
@@ -633,19 +561,19 @@ export default function App() {
       )}
 
       {page === "history" && (
-        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
-          <UserHistory />
+        <div className="app-shell">
+          <UserHistory onStartTriage={() => setPage("home")} />
         </div>
       )}
 
       {page === "firstaid" && (
-        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
+        <div className="app-shell">
           <FirstAid lang={lang} />
         </div>
       )}
 
       {page === "medicalid" && (
-        <div style={{ maxWidth: "100%", margin: "0 auto", padding: "1.5rem 1.5rem 4rem" }}>
+        <div className="app-shell">
           <MedicalID />
         </div>
       )}

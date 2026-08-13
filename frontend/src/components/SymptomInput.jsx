@@ -3,21 +3,11 @@ import strings from "../utils/strings";
 
 const MAX_CHARS = 300;
 
-const CHIP_ICONS = {
-  en: ["❤️", "🚗", "🤰", "⚡", "🐍"],
-  hi: ["❤️", "🚗", "🤰", "⚡", "🐍"],
-  ta: ["❤️", "🚗", "🤰", "⚡", "🐍"],
-  te: ["❤️", "🚗", "🤰", "⚡", "🐍"],
-  bn: ["❤️", "🚗", "🤰", "⚡", "🐍"],
-  mr: ["❤️", "🚗", "🤰", "⚡", "🐍"],
-};
-
 export default function SymptomInput({ lang, onSubmit, isLoading }) {
   const [text, setText] = React.useState("");
   const [focused, setFocused] = React.useState(false);
   const [isRecording, setIsRecording] = React.useState(false);
   const s = strings[lang] || strings["en"];
-  const icons = CHIP_ICONS[lang] || CHIP_ICONS["en"];
   const charCount = text.length;
   const isOverLimit = charCount > MAX_CHARS;
 
@@ -31,7 +21,7 @@ export default function SymptomInput({ lang, onSubmit, isLoading }) {
 
   function toggleMic() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) return alert("Voice not supported in this browser.");
+    if (!SR) return alert("Voice recognition not supported in this browser.");
     const recognition = new SR();
     const localeMap = { hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN", mr: "mr-IN" };
     recognition.lang = localeMap[lang] || "en-IN";
@@ -44,46 +34,45 @@ export default function SymptomInput({ lang, onSubmit, isLoading }) {
   const canSubmit = !isLoading && text.trim() && !isOverLimit;
 
   return (
-    <div style={{ marginBottom: "1.25rem" }}>
-      {/* Label row */}
+    <div style={{ marginBottom: "1.5rem" }}>
+      {/* Label & Counter Row */}
       <div style={{
-        display: "flex", alignItems: "center",
-        justifyContent: "space-between", marginBottom: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: "10px",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <div style={{
-            width: "3px", height: "16px",
-            background: "var(--teal)", borderRadius: "2px",
+            width: "4px",
+            height: "14px",
+            background: "var(--teal)",
+            borderRadius: "2px",
           }} />
           <span style={{
-            fontSize: "11px", fontWeight: "700",
+            fontSize: "11px",
+            fontWeight: "800",
             color: "var(--text-tertiary)",
-            textTransform: "uppercase", letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            letterSpacing: "0.12em",
           }}>
-            {s.labelDescribe}
+            DESCRIBE THE EMERGENCY
           </span>
         </div>
         <span style={{
-          fontSize: "11px", fontWeight: "500",
+          fontSize: "11px",
+          fontWeight: "600",
           color: isOverLimit ? "var(--alert)" : "var(--text-tertiary)",
           fontFamily: "var(--font-mono)",
-          transition: "color var(--transition)",
         }}>
-          {charCount}/{MAX_CHARS}
+          {charCount} / {MAX_CHARS}
         </span>
       </div>
 
-      {/* Input card */}
-      <div style={{
-        background: "var(--bg-card)",
-        border: `1.5px solid ${focused ? "var(--teal)" : isOverLimit ? "var(--alert)" : "var(--border)"}`,
-        borderRadius: "var(--radius-lg)",
-        overflow: "hidden",
-        boxShadow: focused
-          ? "0 0 0 3px rgba(11,122,94,0.10), var(--shadow-sm)"
-          : "var(--shadow-sm)",
-        transition: "border-color var(--transition), box-shadow var(--transition)",
-        marginBottom: "10px",
+      {/* Input Command Card */}
+      <div className="symptom-input-card" style={{
+        borderColor: focused ? "var(--teal)" : isOverLimit ? "var(--alert)" : undefined,
+        boxShadow: focused ? "0 0 0 3px rgba(22, 165, 121, 0.12)" : undefined,
       }}>
         <div style={{ position: "relative" }}>
           <textarea
@@ -92,29 +81,40 @@ export default function SymptomInput({ lang, onSubmit, isLoading }) {
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             onKeyDown={handleKeyDown}
-            placeholder={s.placeholder}
+            placeholder={s.placeholder || "Tell us what is happening right now..."}
             rows={4}
             style={{
-              width: "100%", border: "none", outline: "none",
-              resize: "none", fontSize: "14px", lineHeight: "1.7",
+              width: "100%",
+              border: "none",
+              outline: "none",
+              resize: "none",
+              fontSize: "15px",
+              lineHeight: "1.6",
               color: "var(--text-primary)",
               background: "transparent",
-              padding: "16px 44px 16px 16px",
+              padding: "18px 44px 18px 18px",
               letterSpacing: "-0.01em",
+              boxSizing: "border-box",
             }}
           />
           {text && (
             <button
               onClick={() => setText("")}
               style={{
-                position: "absolute", top: "12px", right: "12px",
-                width: "24px", height: "24px", borderRadius: "50%",
+                position: "absolute",
+                top: "14px",
+                right: "14px",
+                width: "26px",
+                height: "26px",
+                borderRadius: "50%",
                 background: "var(--bg-secondary)",
                 border: "1px solid var(--border)",
-                display: "flex", alignItems: "center",
-                justifyContent: "center", cursor: "pointer",
-                color: "var(--text-tertiary)", fontSize: "14px",
-                lineHeight: 1, transition: "all var(--transition)",
+                display: "grid",
+                placeItems: "center",
+                cursor: "pointer",
+                color: "var(--text-tertiary)",
+                fontSize: "15px",
+                lineHeight: 1,
               }}
             >
               ×
@@ -122,122 +122,108 @@ export default function SymptomInput({ lang, onSubmit, isLoading }) {
           )}
         </div>
 
-        {/* Toolbar */}
-        <div style={{
-          display: "flex", justifyContent: "space-between",
-          alignItems: "center", padding: "10px 14px",
-          borderTop: "1px solid var(--border)",
-          background: "var(--bg-secondary)",
-        }}>
+        {/* Command Toolbar */}
+        <div className="symptom-input-toolbar">
           <button
             onClick={toggleMic}
             style={{
-              display: "flex", alignItems: "center", gap: "6px",
-              padding: "6px 12px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              padding: "8px 14px",
               border: `1px solid ${isRecording ? "var(--alert)" : "var(--border)"}`,
-              borderRadius: "var(--radius-sm)",
-              background: isRecording ? "var(--alert-light)" : "var(--bg-card)",
-              fontSize: "12px", fontWeight: "500",
+              borderRadius: "8px",
+              background: isRecording ? "rgba(225,29,72,0.1)" : "var(--bg-card)",
+              fontSize: "13px",
+              fontWeight: "600",
               color: isRecording ? "var(--alert)" : "var(--text-secondary)",
+              cursor: "pointer",
               transition: "all var(--transition)",
             }}
           >
             {isRecording ? (
               <div style={{
-                width: "8px", height: "8px", borderRadius: "50%",
+                width: "8px",
+                height: "8px",
+                borderRadius: "50%",
                 background: "var(--alert)",
-                animation: "pulse 1s ease infinite",
+                animation: "fabPulse 1s infinite",
               }} />
             ) : (
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3m0 2a1 1 0 0 0-1 1v7a1 1 0 0 0 2 0V5a1 1 0 0 0-1-1m7 8c0 3.53-2.61 6.44-6 6.93V21h2a1 1 0 0 1 0 2H9a1 1 0 0 1 0-2h2v-2.07C7.61 18.44 5 15.53 5 12a1 1 0 0 1 2 0 5 5 0 0 0 10 0 1 1 0 0 1 2 0z"/>
-              </svg>
+              <span>🎙</span>
             )}
-            {isRecording
-              ? (lang === "hi" ? "सुन रहे हैं..." : "Listening...")
-              : s.micLabel}
+            <span>
+              {isRecording
+                ? (lang === "hi" ? "सुन रहे हैं..." : "Listening...")
+                : (lang === "hi" ? "आवाज से बताएं" : "Voice input")}
+            </span>
           </button>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span style={{
-              fontSize: "10px", color: "var(--text-tertiary)",
-              display: text ? "block" : "none",
+              fontSize: "11px",
+              color: "var(--text-tertiary)",
+              display: text ? "inline-block" : "none",
             }}>
-              Ctrl+Enter to submit
+              Ctrl+Enter
             </span>
             <button
+              type="button"
               onClick={handleSubmit}
               disabled={!canSubmit}
-              style={{
-                padding: "8px 20px",
-                background: canSubmit ? "var(--teal)" : "var(--border)",
-                color: canSubmit ? "white" : "var(--text-tertiary)",
-                border: "none",
-                borderRadius: "var(--radius-sm)",
-                fontSize: "13px", fontWeight: "600",
-                transition: "all var(--transition)",
-                display: "flex", alignItems: "center", gap: "6px",
-                cursor: canSubmit ? "pointer" : "not-allowed",
-                letterSpacing: "-0.01em",
-                transform: canSubmit ? "translateY(0)" : "none",
-              }}
-              onMouseEnter={(e) => {
-                if (canSubmit) e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
+              aria-disabled={!canSubmit}
+              aria-label={
+                isLoading
+                  ? (lang === "hi" ? "अस्पताल खोजे जा रहे हैं" : "Searching hospitals...")
+                  : text.trim()
+                  ? (lang === "hi" ? "निकटतम अस्पताल खोजें" : "Find nearest hospital")
+                  : (lang === "hi" ? "लक्षण दर्ज करें" : "Enter symptoms to search")
+              }
+              title={
+                !text.trim()
+                  ? (lang === "hi" ? "अस्पताल खोजने के लिए कृपया लक्षण बताएं" : "Please describe symptoms to search")
+                  : isOverLimit
+                  ? (lang === "hi" ? "अक्षर सीमा पार हो गई" : "Character limit exceeded")
+                  : ""
+              }
+              className="primary-emergency-btn"
             >
               {isLoading ? (
                 <div style={{
-                  width: "14px", height: "14px", borderRadius: "50%",
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "50%",
                   border: "2px solid rgba(255,255,255,0.3)",
-                  borderTopColor: "white",
+                  borderTopColor: "#FFFFFF",
                   animation: "spin 0.7s linear infinite",
                 }} />
               ) : (
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <circle cx="11" cy="11" r="8"/>
-                  <path d="m21 21-4.35-4.35"/>
-                </svg>
+                <>
+                  <span>
+                    {!text.trim()
+                      ? (lang === "hi" ? "लक्षण दर्ज करें" : "Enter symptoms to search")
+                      : (lang === "hi" ? "निकटतम अस्पताल खोजें" : "Find nearest hospital")}
+                  </span>
+                  <span className="btn-arrow" style={{ fontSize: "16px", fontWeight: "700" }}>→</span>
+                </>
               )}
-              {s.triageLabel}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Quick chips */}
-      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-        {s.quickChips.map((chip, i) => (
+      {/* Restrained Quick Symptom Shortcuts */}
+      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        {s.quickChips.map((chip) => (
           <button
             key={chip.label}
             onClick={() => setText(chip.text)}
-            style={{
-              display: "flex", alignItems: "center", gap: "5px",
-              padding: "5px 12px",
-              border: "1px solid var(--border)",
-              borderRadius: "20px", fontSize: "12px", fontWeight: "500",
-              color: "var(--text-secondary)", background: "var(--bg-card)",
-              transition: "all var(--transition)", cursor: "pointer",
-              letterSpacing: "-0.01em",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--teal)";
-              e.currentTarget.style.color = "var(--teal)";
-              e.currentTarget.style.background = "var(--teal-light)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "var(--border)";
-              e.currentTarget.style.color = "var(--text-secondary)";
-              e.currentTarget.style.background = "var(--bg-card)";
-            }}
+            className="symptom-chip"
           >
-            <span>{icons[i]}</span>
-            {chip.label}
+            <span>{chip.label}</span>
           </button>
         ))}
       </div>
     </div>
   );
-}
+}

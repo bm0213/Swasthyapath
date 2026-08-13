@@ -21,45 +21,119 @@ const emptyForm = {
   emergencyRelation: "",
 };
 
-function InfoRow({ label, value, color }) {
-  if (!value) return null;
+// SVG Icon Library
+function ShieldCheckIcon({ size = 16 }) {
   return (
-    <div style={{
-      display: "flex", justifyContent: "space-between",
-      alignItems: "flex-start", padding: "8px 0",
-      borderBottom: "1px solid var(--border)",
-      gap: "12px",
-    }}>
-      <span style={{
-        fontSize: "11px", fontWeight: "700",
-        color: "var(--text-tertiary)",
-        textTransform: "uppercase", letterSpacing: "0.06em",
-        flexShrink: 0, paddingTop: "1px",
-      }}>
-        {label}
-      </span>
-      <span style={{
-        fontSize: "13px", fontWeight: "600",
-        color: color || "var(--text-primary)",
-        textAlign: "right", lineHeight: "1.4",
-      }}>
-        {value}
-      </span>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
   );
 }
 
-function SectionTitle({ children }) {
+function QrIcon({ size = 16 }) {
   return (
-    <div style={{
-      fontSize: "10px", fontWeight: "700",
-      color: "var(--text-tertiary)",
-      textTransform: "uppercase", letterSpacing: "0.08em",
-      marginBottom: "4px", marginTop: "20px",
-      paddingBottom: "8px",
-      borderBottom: "1px solid var(--border)",
-    }}>
-      {children}
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="7" height="7" rx="1.5" />
+      <rect x="14" y="3" width="7" height="7" rx="1.5" />
+      <rect x="3" y="14" width="7" height="7" rx="1.5" />
+      <path d="M14 14h3v3h-3zM17 17h4v4h-4zM14 20h3v1h-3z" />
+    </svg>
+  );
+}
+
+function PrintIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="6 9 6 2 18 2 18 9" />
+      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <rect x="6" y="14" width="12" height="8" />
+    </svg>
+  );
+}
+
+function EditIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+
+function PhoneIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+    </svg>
+  );
+}
+
+function UserIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
+function AlertTriangleIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+}
+
+function StethoscopeIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4.8 2.3A.3.3 0 0 0 4.5 2h-1a.5.5 0 0 0-.5.5v5a5 5 0 0 0 5 5h1a5 5 0 0 0 5-5v-5a.5.5 0 0 0-.5-.5h-1a.3.3 0 0 0-.3.3v4.7a3 3 0 0 1-3 3h-1a3 3 0 0 1-3-3V2.3z" />
+      <path d="M8 17v1a5 5 0 0 0 5 5h0a5 5 0 0 0 5-5v-4" />
+      <circle cx="18" cy="10" r="2" />
+    </svg>
+  );
+}
+
+function LockIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
+function CheckIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function PlusIcon({ size = 16 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  );
+}
+
+function InfoRow({ label, value, color, isMasked }) {
+  if (!value) return null;
+  const displayVal = isMasked && value.length > 4 ? `•••• •••• ${value.slice(-4)}` : value;
+
+  return (
+    <div className="med-id-info-row">
+      <span className="med-id-info-label">{label}</span>
+      <span className="med-id-info-val" style={{ color: color || "var(--text-primary)" }}>
+        {displayVal}
+      </span>
     </div>
   );
 }
@@ -81,18 +155,46 @@ export default function MedicalID() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(form));
     setIsEditing(false);
     setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    setTimeout(() => setSaved(false), 2500);
   }
 
   function handleClear() {
-    if (window.confirm("Are you sure you want to clear your Medical ID?")) {
+    if (window.confirm("Are you sure you want to clear your Medical ID data?")) {
       localStorage.removeItem(STORAGE_KEY);
       setForm(emptyForm);
       setIsEditing(true);
     }
   }
 
-  // QR code data
+  function handlePrint() {
+    window.print();
+  }
+
+  const parseTags = (str) => {
+    if (!str) return [];
+    return str.split(",").map((s) => s.trim()).filter(Boolean);
+  };
+
+  const allergiesList = parseTags(form.allergies);
+  const conditionsList = parseTags(form.conditions);
+  const medicationsList = parseTags(form.medications);
+
+  const keyFields = [
+    form.name,
+    form.age,
+    form.bloodGroup,
+    form.allergies,
+    form.conditions,
+    form.medications,
+    form.doctorName,
+    form.insuranceProvider,
+    form.emergencyName,
+    form.emergencyPhone,
+  ];
+
+  const filledCount = keyFields.filter((f) => String(f || "").trim().length > 0).length;
+  const completenessPercentage = Math.round((filledCount / keyFields.length) * 100);
+
   const qrData = JSON.stringify({
     name: form.name,
     age: form.age,
@@ -107,395 +209,531 @@ export default function MedicalID() {
     doctorPhone: form.doctorPhone,
   });
 
-  const inputStyle = {
-    width: "100%", padding: "9px 12px",
-    border: "1px solid var(--border)",
-    borderRadius: "8px",
-    background: "var(--bg-secondary)",
-    color: "var(--text-primary)",
-    fontSize: "13px", outline: "none",
-    boxSizing: "border-box",
-    marginBottom: "10px",
-  };
-
-  const hasData = form.name || form.bloodGroup || form.emergencyPhone;
+  const hasData = Boolean(form.name || form.bloodGroup || form.emergencyPhone || form.allergies);
 
   return (
-    <div style={{
-      maxWidth: "900px", margin: "0 auto",
-      padding: "1.5rem 1.25rem 4rem",
-    }}>
-      {/* Header */}
-      <div style={{
-        display: "flex", justifyContent: "space-between",
-        alignItems: "flex-start", marginBottom: "1.25rem",
-      }}>
+    <div className="med-id-page-wrapper">
+      {/* 1. Page Header & Live Status */}
+      <div className="med-id-page-header">
         <div>
-          <div style={{
-            fontSize: "20px", fontWeight: "700",
-            color: "var(--text-primary)", marginBottom: "4px",
-          }}>
-            🪪 Medical ID
+          <div className="med-id-header-title-lockup">
+            <h1 className="med-id-page-title">EMERGENCY MEDICAL ID</h1>
+            <div className={`med-id-status-badge ${completenessPercentage >= 70 ? "badge-active" : completenessPercentage > 0 ? "badge-ready" : "badge-incomplete"}`}>
+              <span className="badge-dot" />
+              <span>
+                {completenessPercentage >= 70
+                  ? "MEDICAL ID ACTIVE"
+                  : completenessPercentage > 0
+                  ? "PROFILE READY"
+                  : "PROFILE INCOMPLETE"}
+              </span>
+            </div>
           </div>
-          <div style={{ fontSize: "12px", color: "var(--text-tertiary)" }}>
-            Critical health info doctors can scan in emergencies
-          </div>
+          <p className="med-id-page-subtitle">
+            Your critical medical information, available when it matters most to first responders and care teams.
+          </p>
         </div>
-        <div style={{ display: "flex", gap: "8px" }}>
+
+        {/* Action Controls */}
+        <div className="med-id-header-actions">
           {hasData && !isEditing && (
-            <button onClick={() => setShowQR(!showQR)} style={{
-              padding: "8px 14px",
-              background: showQR ? "var(--teal)" : "var(--bg-card)",
-              color: showQR ? "white" : "var(--text-primary)",
-              border: "1px solid var(--border)",
-              borderRadius: "8px", fontSize: "12px",
-              fontWeight: "600", cursor: "pointer",
-            }}>
-              {showQR ? "Hide QR" : "Show QR"}
+            <button
+              onClick={() => setShowQR(!showQR)}
+              className={`med-id-action-btn ${showQR ? "btn-active-state" : ""}`}
+              title="Show Scannable Emergency QR Code"
+            >
+              <QrIcon />
+              <span>{showQR ? "Hide QR" : "Emergency QR"}</span>
             </button>
           )}
-          {!isEditing && (
-            <button onClick={() => setIsEditing(true)} style={{
-              padding: "8px 14px",
-              background: "#2563EB", color: "white",
-              border: "none", borderRadius: "8px",
-              fontSize: "12px", fontWeight: "600", cursor: "pointer",
-            }}>
-              ✏️ Edit
+
+          {hasData && !isEditing && (
+            <button onClick={handlePrint} className="med-id-action-btn" title="Print Emergency Medical Card">
+              <PrintIcon />
+              <span>Print Card</span>
             </button>
+          )}
+
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="med-id-primary-btn"
+            >
+              <EditIcon />
+              <span>Edit Medical ID →</span>
+            </button>
+          ) : (
+            hasData && (
+              <button
+                onClick={() => setIsEditing(false)}
+                className="med-id-action-btn"
+              >
+                View Passport
+              </button>
+            )
           )}
         </div>
       </div>
 
-      {/* QR Code */}
+      {/* Completeness Bar */}
+      <div className="med-id-completeness-card">
+        <div className="med-id-completeness-meta">
+          <span className="completeness-label">Medical ID Completeness</span>
+          <span className="completeness-val">{completenessPercentage}% Complete</span>
+        </div>
+        <div className="med-id-progress-track">
+          <div
+            className="med-id-progress-fill"
+            style={{ width: `${completenessPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Emergency QR Modal / Card */}
       {showQR && hasData && !isEditing && (
-        <div style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "16px", padding: "1.5rem",
-          marginBottom: "1.25rem", textAlign: "center",
-          boxShadow: "var(--shadow-sm)",
-        }}>
-          <div style={{
-            fontSize: "13px", fontWeight: "600",
-            color: "var(--text-primary)", marginBottom: "4px",
-          }}>
-            Scan to view Medical ID
-          </div>
-          <div style={{
-            fontSize: "11px", color: "var(--text-tertiary)",
-            marginBottom: "1.25rem",
-          }}>
-            Show this to doctors or paramedics in an emergency
-          </div>
-          <div style={{
-            display: "inline-block", padding: "16px",
-            background: "white", borderRadius: "12px",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.1)",
-          }}>
-            <QRCodeSVG
-              value={qrData}
-              size={200}
-              level="M"
-              includeMargin={false}
-            />
-          </div>
-          <div style={{
-            marginTop: "12px", fontSize: "11px",
-            color: "var(--text-tertiary)",
-          }}>
-            Contains: Name, Blood Group, Allergies, Emergency Contact
-          </div>
-        </div>
-      )}
-
-      {/* Medical ID Card View */}
-      {!isEditing && hasData && (
-        <div style={{
-          background: "var(--bg-card)",
-          border: "2px solid #E24B4A30",
-          borderTop: "4px solid #E24B4A",
-          borderRadius: "16px", padding: "1.25rem",
-          marginBottom: "1.25rem",
-          boxShadow: "var(--shadow-sm)",
-        }}>
-          {/* Card Header */}
-          <div style={{
-            display: "flex", alignItems: "center",
-            gap: "12px", marginBottom: "1rem",
-            paddingBottom: "1rem",
-            borderBottom: "1px solid var(--border)",
-          }}>
-            <div style={{
-              width: "48px", height: "48px", borderRadius: "50%",
-              background: "#E24B4A", color: "white",
-              display: "flex", alignItems: "center",
-              justifyContent: "center", fontSize: "22px",
-              flexShrink: 0,
-            }}>
-              🏥
-            </div>
+        <div className="med-id-qr-card fade-up">
+          <div className="qr-card-header">
             <div>
-              <div style={{
-                fontSize: "18px", fontWeight: "700",
-                color: "var(--text-primary)",
-              }}>
-                {form.name || "Unknown"}
-              </div>
-              <div style={{
-                fontSize: "12px", color: "var(--text-secondary)",
-              }}>
-                {form.age ? `Age: ${form.age}` : ""} {form.age && form.bloodGroup ? "·" : ""} {form.bloodGroup ? `Blood: ${form.bloodGroup}` : ""}
-              </div>
+              <div className="qr-card-title">Scannable Emergency QR Payload</div>
+              <div className="qr-card-sub">First responders can scan this code to retrieve vital medical metrics immediately.</div>
             </div>
-            {form.bloodGroup && (
-              <div style={{
-                marginLeft: "auto",
-                width: "48px", height: "48px",
-                borderRadius: "50%",
-                background: "#E24B4A",
-                color: "white", fontWeight: "700",
-                fontSize: "14px",
-                display: "flex", alignItems: "center",
-                justifyContent: "center", flexShrink: 0,
-              }}>
-                {form.bloodGroup}
-              </div>
-            )}
+            <button className="qr-close-btn" onClick={() => setShowQR(false)}>✕</button>
           </div>
-
-          {/* Critical Info */}
-          {(form.allergies || form.conditions || form.medications) && (
-            <>
-              <div style={{
-                fontSize: "10px", fontWeight: "700",
-                color: "#E24B4A",
-                textTransform: "uppercase", letterSpacing: "0.08em",
-                marginBottom: "8px",
-              }}>
-                ⚠️ Critical Medical Info
-              </div>
-              <InfoRow label="Allergies" value={form.allergies} color="#E24B4A" />
-              <InfoRow label="Conditions" value={form.conditions} />
-              <InfoRow label="Medications" value={form.medications} />
-            </>
-          )}
-
-          {/* Doctor Info */}
-          {(form.doctorName || form.doctorPhone) && (
-            <>
-              <div style={{
-                fontSize: "10px", fontWeight: "700",
-                color: "var(--text-tertiary)",
-                textTransform: "uppercase", letterSpacing: "0.08em",
-                marginBottom: "8px", marginTop: "16px",
-              }}>
-                👨‍⚕️ Doctor
-              </div>
-              <InfoRow label="Name" value={form.doctorName} />
-              <InfoRow label="Phone" value={form.doctorPhone} />
-            </>
-          )}
-
-          {/* Insurance */}
-          {(form.insuranceProvider || form.insuranceNumber) && (
-            <>
-              <div style={{
-                fontSize: "10px", fontWeight: "700",
-                color: "var(--text-tertiary)",
-                textTransform: "uppercase", letterSpacing: "0.08em",
-                marginBottom: "8px", marginTop: "16px",
-              }}>
-                🪪 Insurance
-              </div>
-              <InfoRow label="Provider" value={form.insuranceProvider} />
-              <InfoRow label="Policy No." value={form.insuranceNumber} />
-            </>
-          )}
-
-          {/* Emergency Contact */}
-          {(form.emergencyName || form.emergencyPhone) && (
-            <>
-              <div style={{
-                fontSize: "10px", fontWeight: "700",
-                color: "var(--text-tertiary)",
-                textTransform: "uppercase", letterSpacing: "0.08em",
-                marginBottom: "8px", marginTop: "16px",
-              }}>
-                🆘 Emergency Contact
-              </div>
-              <InfoRow label="Name" value={form.emergencyName} />
-              <InfoRow label="Relation" value={form.emergencyRelation} />
-              <InfoRow label="Phone" value={form.emergencyPhone} />
-            </>
-          )}
-
-          {/* Call Emergency Contact */}
-          {form.emergencyPhone && (
-            <a href={`tel:${form.emergencyPhone}`} style={{
-              display: "flex", alignItems: "center",
-              justifyContent: "center", gap: "8px",
-              padding: "12px", marginTop: "16px",
-              background: "#E24B4A", color: "white",
-              borderRadius: "10px", fontSize: "13px",
-              fontWeight: "700", textDecoration: "none",
-            }}>
-              📞 Call Emergency Contact
-            </a>
-          )}
+          <div className="qr-code-frame">
+            <QRCodeSVG value={qrData} size={210} level="M" includeMargin={false} />
+          </div>
+          <div className="qr-card-footer">
+            <LockIcon size={12} />
+            <span>Encrypted Local Payload: Name • Blood Group • Allergies • Emergency Contact</span>
+          </div>
         </div>
       )}
 
-      {/* Empty state */}
+      {/* 2. Digital Medical Passport View Card (VIEW MODE) */}
+      {!isEditing && hasData && (
+        <div className="med-id-passport-card fade-up">
+          {/* Header Ribbon */}
+          <div className="passport-ribbon">
+            <div className="ribbon-brand">
+              <ShieldCheckIcon size={16} />
+              <span>SWASTHYAPATH • OFFICIAL EMERGENCY MEDICAL PASSPORT</span>
+            </div>
+            <div className="ribbon-badge">
+              <span>OFFICIAL RECORD</span>
+            </div>
+          </div>
+
+          {/* Hero Patient Block */}
+          <div className="passport-hero">
+            <div className="patient-identity-lockup">
+              <div className="patient-avatar">
+                {form.name ? form.name.charAt(0).toUpperCase() : "🏥"}
+              </div>
+              <div>
+                <h2 className="patient-name">{form.name || "Anonymous Patient"}</h2>
+                <div className="patient-meta">
+                  <span>{form.age ? `Age ${form.age} Yrs` : "Age Unspecified"}</span>
+                  <span className="dot-sep">•</span>
+                  <span>Primary Emergency Passport</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Prominent Blood Type Badge */}
+            <div className="passport-blood-block">
+              <span className="blood-title">BLOOD TYPE</span>
+              <span className="blood-value">{form.bloodGroup || "--"}</span>
+              <span className="blood-disclaimer">*Clinical blood typing required pre-transfusion</span>
+            </div>
+          </div>
+
+          <div className="med-id-divider" />
+
+          {/* Critical Health Alerts Section */}
+          <div className="passport-alerts-section">
+            <div className="section-head-lockup alert-head">
+              <AlertTriangleIcon size={16} />
+              <h3>CRITICAL HEALTH INFORMATION</h3>
+            </div>
+
+            <div className="alerts-grid">
+              {/* Allergies */}
+              <div className="alert-card-item">
+                <div className="alert-card-title">ALLERGIES</div>
+                {allergiesList.length > 0 ? (
+                  <div className="tag-group">
+                    {allergiesList.map((alg, i) => (
+                      <span key={i} className="tag-chip tag-red">{alg}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="tag-empty">No allergies recorded</div>
+                )}
+              </div>
+
+              {/* Conditions */}
+              <div className="alert-card-item">
+                <div className="alert-card-title">MEDICAL CONDITIONS</div>
+                {conditionsList.length > 0 ? (
+                  <div className="tag-group">
+                    {conditionsList.map((c, i) => (
+                      <span key={i} className="tag-chip tag-amber">{c}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="tag-empty">No conditions recorded</div>
+                )}
+              </div>
+
+              {/* Medications */}
+              <div className="alert-card-item">
+                <div className="alert-card-title">CURRENT MEDICATIONS</div>
+                {medicationsList.length > 0 ? (
+                  <div className="tag-group">
+                    {medicationsList.map((m, i) => (
+                      <span key={i} className="tag-chip tag-emerald">{m}</span>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="tag-empty">No medications recorded</div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="med-id-divider" />
+
+          {/* Primary Emergency Contact Block */}
+          <div className="passport-contact-section">
+            <div className="section-head-lockup emergency-head">
+              <PhoneIcon size={16} />
+              <h3>PRIMARY EMERGENCY CONTACT</h3>
+            </div>
+
+            <div className="emergency-contact-hero-card">
+              <div className="contact-info-block">
+                <div className="contact-name">
+                  {form.emergencyName || "Emergency Contact Not Added"}
+                  {form.emergencyRelation && <span className="contact-relation"> ({form.emergencyRelation})</span>}
+                </div>
+                <div className="contact-phone">
+                  {form.emergencyPhone || "No phone number available"}
+                </div>
+              </div>
+
+              {form.emergencyPhone ? (
+                <a href={`tel:${form.emergencyPhone}`} className="contact-call-cta">
+                  <PhoneIcon size={16} />
+                  <span>Call contact →</span>
+                </a>
+              ) : (
+                <button onClick={() => setIsEditing(true)} className="contact-add-cta">
+                  <PlusIcon size={14} />
+                  <span>Add emergency contact →</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="med-id-divider" />
+
+          {/* Care & Coverage (Secondary) */}
+          <div className="passport-care-section">
+            <div className="section-head-lockup care-head">
+              <StethoscopeIcon size={16} />
+              <h3>CARE & COVERAGE</h3>
+            </div>
+
+            <div className="care-grid">
+              <div className="care-card-item">
+                <div className="care-card-title">PRIMARY PHYSICIAN</div>
+                <InfoRow label="Doctor Name" value={form.doctorName || "Not assigned"} />
+                <InfoRow label="Phone Number" value={form.doctorPhone} />
+                {form.doctorPhone && (
+                  <a href={`tel:${form.doctorPhone}`} className="care-phone-link">
+                    <PhoneIcon size={14} />
+                    <span>Call Doctor</span>
+                  </a>
+                )}
+              </div>
+
+              <div className="care-card-item">
+                <div className="care-card-title">INSURANCE DETAILS</div>
+                <InfoRow label="Insurance Provider" value={form.insuranceProvider || "No insurance recorded"} />
+                <InfoRow label="Policy Number" value={form.insuranceNumber} isMasked={true} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Empty State (When no data created yet) */}
       {!isEditing && !hasData && (
-        <div style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "12px", padding: "3rem",
-          textAlign: "center", marginBottom: "1.25rem",
-        }}>
-          <div style={{ fontSize: "40px", marginBottom: "12px" }}>🪪</div>
-          <div style={{
-            fontSize: "15px", fontWeight: "600",
-            color: "var(--text-secondary)", marginBottom: "6px",
-          }}>
-            No Medical ID yet
+        <div className="med-id-empty-card fade-up">
+          <div className="empty-icon-frame">
+            <ShieldCheckIcon size={32} />
           </div>
-          <div style={{
-            fontSize: "13px", color: "var(--text-tertiary)",
-            marginBottom: "1.25rem",
-          }}>
-            Set up your Medical ID so doctors can help you faster in emergencies.
-          </div>
-          <button onClick={() => setIsEditing(true)} style={{
-            padding: "10px 24px",
-            background: "#2563EB", color: "white",
-            border: "none", borderRadius: "9px",
-            fontSize: "13px", fontWeight: "600", cursor: "pointer",
-          }}>
-            Create Medical ID
+          <h2 className="empty-title">Create Your Emergency Medical ID</h2>
+          <p className="empty-sub">
+            Set up your scannable Emergency Passport so paramedics, ER doctors, and first responders can immediately access critical health data during emergencies.
+          </p>
+          <button onClick={() => setIsEditing(true)} className="med-id-primary-btn" style={{ minHeight: "48px", padding: "0 28px" }}>
+            Create Medical ID →
           </button>
         </div>
       )}
 
-      {/* Edit Form */}
+      {/* 4. Polished Form Editor (EDIT MODE) */}
       {isEditing && (
-        <div style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          borderRadius: "16px", padding: "1.25rem",
-          marginBottom: "1.25rem",
-        }}>
-          {/* Personal Info */}
-          <SectionTitle>Personal Information</SectionTitle>
-          <input placeholder="Full name" value={form.name}
-            onChange={(e) => handleChange("name", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Age" value={form.age} type="number"
-            onChange={(e) => handleChange("age", e.target.value)}
-            style={inputStyle} />
-          <select value={form.bloodGroup}
-            onChange={(e) => handleChange("bloodGroup", e.target.value)}
-            style={{ ...inputStyle, color: form.bloodGroup ? "var(--text-primary)" : "var(--text-tertiary)" }}>
-            <option value="">Select blood group</option>
-            {BLOOD_GROUPS.map((bg) => (
-              <option key={bg} value={bg}>{bg}</option>
-            ))}
-          </select>
-
-          {/* Medical Info */}
-          <SectionTitle>Medical Information</SectionTitle>
-          <input placeholder="Allergies (e.g. Penicillin, Peanuts)" value={form.allergies}
-            onChange={(e) => handleChange("allergies", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Existing conditions (e.g. Diabetes, Hypertension)" value={form.conditions}
-            onChange={(e) => handleChange("conditions", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Current medications (e.g. Metformin 500mg)" value={form.medications}
-            onChange={(e) => handleChange("medications", e.target.value)}
-            style={inputStyle} />
-
-          {/* Doctor Info */}
-          <SectionTitle>Doctor Information</SectionTitle>
-          <input placeholder="Doctor's name" value={form.doctorName}
-            onChange={(e) => handleChange("doctorName", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Doctor's phone number" value={form.doctorPhone}
-            onChange={(e) => handleChange("doctorPhone", e.target.value)}
-            style={inputStyle} />
-
-          {/* Insurance */}
-          <SectionTitle>Insurance Information</SectionTitle>
-          <input placeholder="Insurance provider (e.g. Star Health)" value={form.insuranceProvider}
-            onChange={(e) => handleChange("insuranceProvider", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Policy number" value={form.insuranceNumber}
-            onChange={(e) => handleChange("insuranceNumber", e.target.value)}
-            style={inputStyle} />
-
-          {/* Emergency Contact */}
-          <SectionTitle>Emergency Contact</SectionTitle>
-          <input placeholder="Contact name" value={form.emergencyName}
-            onChange={(e) => handleChange("emergencyName", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Relation (e.g. Father, Spouse)" value={form.emergencyRelation}
-            onChange={(e) => handleChange("emergencyRelation", e.target.value)}
-            style={inputStyle} />
-          <input placeholder="Phone number" value={form.emergencyPhone}
-            onChange={(e) => handleChange("emergencyPhone", e.target.value)}
-            style={inputStyle} />
-
-          {/* Buttons */}
-          <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
-            <button onClick={handleSave} style={{
-              flex: 1, padding: "12px",
-              background: saved ? "var(--teal)" : "#2563EB",
-              color: "white", border: "none",
-              borderRadius: "9px", fontSize: "13px",
-              fontWeight: "600", cursor: "pointer",
-            }}>
-              {saved ? "✅ Saved!" : "💾 Save Medical ID"}
-            </button>
+        <div className="med-id-editor-card fade-up">
+          <div className="editor-header">
+            <div>
+              <h2 className="editor-title">Edit Emergency Medical ID</h2>
+              <p className="editor-sub">Fill out critical medical metrics to populate your scannable emergency passport.</p>
+            </div>
             {hasData && (
-              <button onClick={() => setIsEditing(false)} style={{
-                padding: "12px 16px",
-                background: "transparent",
-                color: "var(--text-secondary)",
-                border: "1px solid var(--border)",
-                borderRadius: "9px", fontSize: "13px",
-                cursor: "pointer",
-              }}>
+              <button onClick={() => setIsEditing(false)} className="med-id-action-btn">
                 Cancel
               </button>
             )}
           </div>
 
-          {hasData && (
-            <button onClick={handleClear} style={{
-              width: "100%", marginTop: "8px",
-              padding: "10px", background: "transparent",
-              color: "var(--alert)",
-              border: "1px solid var(--alert)40",
-              borderRadius: "9px", fontSize: "12px",
-              fontWeight: "600", cursor: "pointer",
-            }}>
-              🗑️ Clear Medical ID
-            </button>
-          )}
+          <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+            {/* Form Section 1: Personal Information */}
+            <div className="form-group-block">
+              <div className="form-group-head">
+                <UserIcon size={16} />
+                <span>Personal Information</span>
+              </div>
+              <div className="form-input-grid">
+                <div className="input-wrapper">
+                  <label className="input-label">FULL NAME</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. John Doe"
+                    value={form.name}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">AGE (YEARS)</label>
+                  <input
+                    type="number"
+                    placeholder="e.g. 35"
+                    value={form.age}
+                    onChange={(e) => handleChange("age", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">BLOOD GROUP</label>
+                  <select
+                    value={form.bloodGroup}
+                    onChange={(e) => handleChange("bloodGroup", e.target.value)}
+                    className="med-id-select"
+                  >
+                    <option value="">Select blood group</option>
+                    {BLOOD_GROUPS.map((bg) => (
+                      <option key={bg} value={bg}>{bg}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Form Section 2: Critical Health Information */}
+            <div className="form-group-block">
+              <div className="form-group-head alert-head">
+                <AlertTriangleIcon size={16} />
+                <span>Critical Health Information</span>
+              </div>
+              <div className="form-input-grid single-col">
+                <div className="input-wrapper">
+                  <label className="input-label">ALLERGIES (COMMA SEPARATED)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Penicillin, Peanuts, Latex"
+                    value={form.allergies}
+                    onChange={(e) => handleChange("allergies", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">EXISTING CONDITIONS (COMMA SEPARATED)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Asthma, Type 2 Diabetes, Hypertension"
+                    value={form.conditions}
+                    onChange={(e) => handleChange("conditions", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">CURRENT MEDICATIONS (COMMA SEPARATED)</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Albuterol 100mcg, Metformin 500mg"
+                    value={form.medications}
+                    onChange={(e) => handleChange("medications", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Form Section 3: Care & Coverage */}
+            <div className="form-group-block">
+              <div className="form-group-head care-head">
+                <StethoscopeIcon size={16} />
+                <span>Care & Coverage</span>
+              </div>
+              <div className="form-input-grid">
+                <div className="input-wrapper">
+                  <label className="input-label">PRIMARY PHYSICIAN NAME</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Dr. Sarah Smith"
+                    value={form.doctorName}
+                    onChange={(e) => handleChange("doctorName", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">DOCTOR PHONE NUMBER</label>
+                  <input
+                    type="tel"
+                    placeholder="e.g. +91 98765 43210"
+                    value={form.doctorPhone}
+                    onChange={(e) => handleChange("doctorPhone", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">INSURANCE PROVIDER</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Star Health Insurance"
+                    value={form.insuranceProvider}
+                    onChange={(e) => handleChange("insuranceProvider", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">POLICY NUMBER</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. SH-987654321"
+                    value={form.insuranceNumber}
+                    onChange={(e) => handleChange("insuranceNumber", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Form Section 4: Emergency Contact */}
+            <div className="form-group-block">
+              <div className="form-group-head emergency-head">
+                <PhoneIcon size={16} />
+                <span>Emergency Contact</span>
+              </div>
+              <div className="form-input-grid">
+                <div className="input-wrapper">
+                  <label className="input-label">EMERGENCY CONTACT NAME</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Jane Doe"
+                    value={form.emergencyName}
+                    onChange={(e) => handleChange("emergencyName", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">RELATIONSHIP</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Spouse / Mother / Brother"
+                    value={form.emergencyRelation}
+                    onChange={(e) => handleChange("emergencyRelation", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+
+                <div className="input-wrapper">
+                  <label className="input-label">EMERGENCY PHONE NUMBER</label>
+                  <input
+                    type="tel"
+                    placeholder="e.g. +91 98765 43211"
+                    value={form.emergencyPhone}
+                    onChange={(e) => handleChange("emergencyPhone", e.target.value)}
+                    className="med-id-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Form Footer Actions */}
+            <div className="form-footer-actions">
+              <button
+                type="submit"
+                className="med-id-save-btn"
+              >
+                {saved ? (
+                  <>
+                    <CheckIcon size={18} />
+                    <span>✓ Medical ID updated</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Save Medical ID</span>
+                    <span className="btn-arrow">→</span>
+                  </>
+                )}
+              </button>
+
+              {hasData && (
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="med-id-action-btn"
+                  style={{ minHeight: "48px", padding: "0 22px" }}
+                >
+                  Cancel
+                </button>
+              )}
+            </div>
+
+            {hasData && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="med-id-clear-btn"
+              >
+                Clear Medical ID Record
+              </button>
+            )}
+          </form>
         </div>
       )}
 
-      {/* Privacy note */}
-      <div style={{
-        display: "flex", alignItems: "flex-start", gap: "8px",
-        padding: "10px 12px",
-        background: "var(--teal-light)",
-        border: "1px solid var(--teal)30",
-        borderRadius: "8px",
-        fontSize: "11px", color: "var(--text-secondary)",
-        lineHeight: "1.5",
-      }}>
-        🔒 Your Medical ID is stored only on this device and never uploaded to any server.
+      {/* 5. Privacy Trust Banner */}
+      <div className="med-id-privacy-banner">
+        <LockIcon size={18} />
+        <div>
+          <div className="privacy-title">YOUR DATA STAYS PRIVATE</div>
+          <div className="privacy-sub">
+            Your Medical ID is encrypted and stored locally in this browser device storage. It is never transmitted to external cloud servers.
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://swasthyapath-backend.onrender.com";
 
 export async function callTriage(symptoms, location = null) {
   console.log("Calling backend at:", BACKEND_URL);

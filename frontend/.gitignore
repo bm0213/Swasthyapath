@@ -2,8 +2,9 @@
 node_modules/
 package-lock.json
 
-# Environment variables (SENSITIVE - never commit!)
-.env
+# Environment variables
+.env              # ← secrets (API keys, passwords) — NEVER commit
+# .env.production is intentionally committed — it only contains the backend URL (no secrets)
 
 # Build output
 dist/
