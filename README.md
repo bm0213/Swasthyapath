@@ -528,7 +528,6 @@ This project is open source, available under the [MIT License](LICENSE).
 
 [Arka Roy](https://github.com/arka-coder) &nbsp;·&nbsp; [Bibhradip Mandal](https://github.com/bm0213)
 
-`arka-coder` &nbsp;·&nbsp; `bm0213`
 
 <br/>
 
