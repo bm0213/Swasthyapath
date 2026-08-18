@@ -2,11 +2,6 @@
 
 <br/>
 
-<!-- Logo / Banner -->
-<img src="https://img.shields.io/badge/%E2%9D%A4%EF%B8%8F-Built%20for%20India's%20Emergency%20Healthcare-16A579?style=for-the-badge&labelColor=07111F&color=16A579" alt="Built for India"/>
-
-<br/><br/>
-
 # SwasthyaPath
 ### AI-Powered Emergency Medical Command Center
 
@@ -529,15 +524,15 @@ This project is open source, available under the [MIT License](LICENSE).
 
 <br/>
 
-<img src="https://img.shields.io/badge/Made%20in-India%20🇮🇳-FF9933?style=flat-square&labelColor=07111F" alt="Made in India"/>
-&nbsp;
-<img src="https://img.shields.io/badge/Built%20with-Claude%20AI-D4A853?style=flat-square&labelColor=07111F" alt="Built with Claude AI"/>
-&nbsp;
-<img src="https://img.shields.io/badge/Open%20Source-MIT-16A579?style=flat-square&labelColor=07111F" alt="Open Source MIT"/>
+**Made by**
 
-<br/><br/>
+[Arka Roy](https://github.com/arka-coder) &nbsp;·&nbsp; [Bibhradip Mandal](https://github.com/bm0213)
 
-**[bm0213](https://github.com/bm0213)** — [GitHub](https://github.com/bm0213) · [Live Demo](https://swasthyapath-orcin.vercel.app)
+`arka-coder` &nbsp;·&nbsp; `bm0213`
+
+<br/>
+
+[Live Demo](https://swasthyapath-orcin.vercel.app) &nbsp;·&nbsp; [MIT License](LICENSE)
 
 <br/>
 
