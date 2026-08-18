@@ -177,13 +177,17 @@ export default function App() {
     }
   }
 
+  const isUnauthenticatedAdminPage = page === "admin" && !isAdminAuthenticated;
+
   return (
     <>
-      <Header
-        lang={lang} setLang={setLang}
-        currentPage={page} setPage={setPage}
-        isAdmin={isAdminAuthenticated}
-      />
+      {!isUnauthenticatedAdminPage && (
+        <Header
+          lang={lang} setLang={setLang}
+          currentPage={page} setPage={setPage}
+          isAdmin={isAdminAuthenticated}
+        />
+      )}
 
       {page === "settings" && (
         <Settings lang={lang} setLang={setLang} onClose={() => setPage("landing")} />
@@ -198,33 +202,39 @@ export default function App() {
       )}
 
       {page === "admin" && (
-        <div className="app-shell">
-          {isAdminAuthenticated ? (
-            <>
-              <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
-                <button
-                  onClick={() => {
-                    sessionStorage.removeItem("admin-auth");
-                    setIsAdminAuthenticated(false);
-                  }}
-                  style={{
-                    padding: "7px 16px",
-                    background: "transparent",
-                    color: "var(--alert)",
-                    border: "1px solid var(--alert)30",
-                    borderRadius: "var(--radius-sm)",
-                    fontSize: "13px", fontWeight: "600", cursor: "pointer",
-                  }}
-                >
-                  🔓 Sign out
-                </button>
-              </div>
-              <AdminDashboard lang={lang} isAdmin={true} />
-            </>
-          ) : (
-            <AdminLogin onSuccess={() => setIsAdminAuthenticated(true)} />
-          )}
-        </div>
+        isAdminAuthenticated ? (
+          <div className="app-shell">
+            <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+              <button
+                onClick={() => {
+                  sessionStorage.removeItem("admin-auth");
+                  setIsAdminAuthenticated(false);
+                }}
+                style={{
+                  padding: "7px 16px",
+                  background: "transparent",
+                  color: "var(--alert)",
+                  border: "1px solid var(--alert)30",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "13px", fontWeight: "600", cursor: "pointer",
+                  display: "inline-flex", alignItems: "center", gap: "6px",
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                  <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 9.9-1" />
+                </svg>
+                Sign out
+              </button>
+            </div>
+            <AdminDashboard lang={lang} isAdmin={true} />
+          </div>
+        ) : (
+          <AdminLogin
+            onSuccess={() => setIsAdminAuthenticated(true)}
+            onBack={() => setPage("landing")}
+          />
+        )
       )}
 
       {page === "home" && (
@@ -578,48 +588,52 @@ export default function App() {
         </div>
       )}
 
-      <FAB
-        lang={lang}
-        userLocation={userLocation}
-        onSOS={() => setShowSOS(true)}
-        onChat={() => setShowChat(true)}
-      />
+      {!isUnauthenticatedAdminPage && (
+        <>
+          <FAB
+            lang={lang}
+            userLocation={userLocation}
+            onSOS={() => setShowSOS(true)}
+            onChat={() => setShowChat(true)}
+          />
 
-      <SOSButton
-        lang={lang}
-        userLocation={userLocation}
-        forceOpen={showSOS}
-        onClose={() => setShowSOS(false)}
-      />
+          <SOSButton
+            lang={lang}
+            userLocation={userLocation}
+            forceOpen={showSOS}
+            onClose={() => setShowSOS(false)}
+          />
 
-      <DoctorChat
-        lang={lang}
-        triageResult={triageResult}
-        forceOpen={showChat}
-        onClose={() => setShowChat(false)}
-        onAmbulanceLocation={(loc) => setAmbulanceLocation(loc)}
-        onPatientLocation={(loc) => setUserLocation(loc)}
-      />
+          <DoctorChat
+            lang={lang}
+            triageResult={triageResult}
+            forceOpen={showChat}
+            onClose={() => setShowChat(false)}
+            onAmbulanceLocation={(loc) => setAmbulanceLocation(loc)}
+            onPatientLocation={(loc) => setUserLocation(loc)}
+          />
 
-      <div style={{
-        position: "fixed", bottom: 0, left: 0, right: 0,
-        zIndex: 100, display: "none",
-        paddingBottom: "env(safe-area-inset-bottom)",
-        background: "var(--alert)",
-      }} className="emergency-bottom">
-        <div style={{
-          display: "flex", justifyContent: "space-between",
-          alignItems: "center", padding: "10px 16px",
-          color: "white", fontSize: "13px", fontWeight: "600",
-        }}>
-          <span>{lang === "hi" ? "राष्ट्रीय आपातकालीन" : "National Emergency"}</span>
-          <a href="tel:112" style={{
-            fontSize: "17px", fontWeight: "700", color: "white",
-            textDecoration: "none", padding: "4px 16px",
-            background: "rgba(255,255,255,0.2)", borderRadius: "20px",
-          }}>112</a>
-        </div>
-      </div>
+          <div style={{
+            position: "fixed", bottom: 0, left: 0, right: 0,
+            zIndex: 100, display: "none",
+            paddingBottom: "env(safe-area-inset-bottom)",
+            background: "var(--alert)",
+          }} className="emergency-bottom">
+            <div style={{
+              display: "flex", justifyContent: "space-between",
+              alignItems: "center", padding: "10px 16px",
+              color: "white", fontSize: "13px", fontWeight: "600",
+            }}>
+              <span>{lang === "hi" ? "राष्ट्रीय आपातकालीन" : "National Emergency"}</span>
+              <a href="tel:112" style={{
+                fontSize: "17px", fontWeight: "700", color: "white",
+                textDecoration: "none", padding: "4px 16px",
+                background: "rgba(255,255,255,0.2)", borderRadius: "20px",
+              }}>112</a>
+            </div>
+          </div>
+        </>
+      )}
 
       <style>{`
         @media (max-width: 768px) {
