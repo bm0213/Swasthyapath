@@ -41,10 +41,13 @@ function getMockTriage(symptoms) {
   if (text.includes("seizure") || text.includes("convulsion") || text.includes("unconscious") || text.includes("दौरे")) {
     return { severity: "critical", severityLabel: "Critical Emergency", summary: "Seizure with loss of consciousness in a child requires immediate neurological evaluation.", facilities: ["Paediatrics", "ICU", "CT Scan"], doNow: "Lay the child on their side on a soft surface. Do not put anything in their mouth. Time the seizure and call 112." };
   }
-  if (text.includes("fever") || text.includes("vomit") || text.includes("diarrhea") || text.includes("बुखार")) {
-    return { severity: "moderate", severityLabel: "Moderate", summary: "Symptoms suggest a moderate illness that needs medical evaluation but is not immediately life-threatening.", facilities: ["Emergency", "Basic Lab"], doNow: "Keep the patient hydrated with water or ORS. Avoid self-medication. Visit the nearest clinic soon." };
+  if (text.includes("fever") || text.includes("vomit") || text.includes("diarrhea") || text.includes("बुखार") || text.includes("infection")) {
+    return { severity: "urgent", severityLabel: "Medium Priority", summary: "Symptoms suggest a medical illness that needs professional evaluation. Visiting a nearby clinic or medical center is recommended.", facilities: ["Emergency", "Basic Lab"], doNow: "Keep the patient hydrated with water or ORS. Avoid self-medication. Consult a clinic or doctor." };
   }
-  return { severity: "moderate", severityLabel: "Moderate", summary: "Symptoms have been noted. A medical professional should evaluate this condition as soon as possible.", facilities: ["Emergency", "Basic Lab"], doNow: "Keep the patient comfortable and hydrated. Avoid any strenuous activity and visit a nearby hospital." };
+  if (text.includes("headache") || text.includes("cut") || text.includes("scratch") || text.includes("bandage") || text.includes("cold") || text.includes("cough") || text.includes("acidity") || text.includes("पट्टी") || text.includes("सिरदर्द")) {
+    return { severity: "low", severityLabel: "Low Priority", summary: "Symptoms appear mild and non-life-threatening. First aid and OTC medication from a nearby pharmacy are appropriate.", facilities: ["First Aid", "OTC Medication"], doNow: "Rest, hydrate, and apply basic first aid. Visit a nearby pharmacy for necessary supplies." };
+  }
+  return { severity: "moderate", severityLabel: "Medium Priority", summary: "Symptoms have been noted. A medical consultation at a nearby clinic or hospital is recommended.", facilities: ["Emergency", "Basic Lab"], doNow: "Keep the patient comfortable and hydrated. Visit a local clinic or hospital." };
 }
 
 router.post("/", async (req, res) => {

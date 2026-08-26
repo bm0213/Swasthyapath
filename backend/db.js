@@ -1,12 +1,25 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
+  const uri = process.env.MONGODB_URI;
+
+  // If MONGODB_URI is missing or still has the placeholder value, skip quietly.
+  // Triage history and admin features will be unavailable, but the rest of the
+  // server (AI triage, Mappls nearby proxy) will continue to work.
+  if (!uri || uri.startsWith("your_mongodb")) {
+    console.warn(
+      "[DB] ⚠  MONGODB_URI is not configured — history and admin features disabled."
+    );
+    return;
+  }
+
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    await mongoose.connect(uri);
     console.log("MongoDB connected ✓");
   } catch (err) {
-    console.error("MongoDB connection error:", err);
-    process.exit(1);
+    console.error("[DB] MongoDB connection error:", err.message);
+    console.warn("[DB] ⚠  Continuing without MongoDB — history and admin features disabled.");
+    // Do NOT call process.exit(1); let the server keep running.
   }
 };
 
