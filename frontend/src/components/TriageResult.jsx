@@ -1,75 +1,76 @@
 import React from "react";
 import strings from "../utils/strings";
 
-export default function TriageResult({ result, lang }) {
+export default function TriageResult({ result, lang, onFindCare, onNavigateFirstAid }) {
   const s = strings[lang] || strings["en"];
+  const isHi = lang === "hi";
   const [isSpeaking, setIsSpeaking] = React.useState(false);
   const [isSupported] = React.useState(() => "speechSynthesis" in window);
-  const [isDark, setIsDark] = React.useState(
-    () => document.documentElement.getAttribute("data-theme") === "dark"
-  );
 
   React.useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => observer.disconnect();
-  }, []);
-
-  React.useEffect(() => {
-    return () => { if (window.speechSynthesis) window.speechSynthesis.cancel(); };
+    return () => {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
   }, [result]);
 
-  const severityConfig = {
-    critical: {
-      bg: isDark ? "#160808" : "#FFFAFA",
-      border: isDark ? "#7F1D1D" : "#FECACA",
-      accent: "#EF4444",
-      accentDark: "#DC2626",
-      text: isDark ? "#FCA5A5" : "#7F1D1D",
-      subtle: isDark ? "#2D1010" : "#FEF2F2",
-      label: "🔴",
+  const priority = (result.priority || (result.severity === "critical" ? "high" : result.severity === "low" ? "low" : "medium")).toLowerCase();
+
+  const priorityConfig = {
+    high: {
+      accent: "var(--alert)",
+      bg: "var(--alert-light)",
+      border: "rgba(225, 29, 72, 0.3)",
+      dotColor: "var(--alert)",
+      label: isHi ? "उच्च प्राथमिकता" : "HIGH PRIORITY",
+      subLabel: isHi ? "तत्काल आपातकालीन अस्पताल की आवश्यकता" : "Immediate Medical Attention Required",
+      recommendedCategory: "hospitals",
+      recommendedLabel: isHi ? "🏥 आपातकालीन अस्पताल" : "🏥 Emergency Hospital",
+      ctaText: isHi ? "पास के आपातकालीन अस्पताल खोजें" : "Find Nearby Emergency Care",
+      ctaIcon: "🏥",
+      showEmergencyCall: true,
     },
-    urgent: {
-      bg: isDark ? "#141008" : "#FFFDF5",
-      border: isDark ? "#78350F" : "#FDE68A",
-      accent: "#F59E0B",
-      accentDark: "#D97706",
-      text: isDark ? "#FCD34D" : "#78350F",
-      subtle: isDark ? "#231A00" : "#FFFBEB",
-      label: "🟡",
+    medium: {
+      accent: "var(--amber)",
+      bg: "var(--amber-light)",
+      border: "rgba(245, 158, 11, 0.3)",
+      dotColor: "var(--amber)",
+      label: isHi ? "मध्यम प्राथमिकता" : "MEDIUM PRIORITY",
+      subLabel: isHi ? "चिकित्सीय परामर्श अनुशंसित" : "Medical Consultation Recommended",
+      recommendedCategory: "clinics",
+      recommendedLabel: isHi ? "🩺 पास का क्लिनिक या अस्पताल" : "🩺 Nearby Clinic or Hospital",
+      ctaText: isHi ? "पास में स्वास्थ्य केंद्र खोजें" : "Find Care Near Me",
+      ctaIcon: "🩺",
+      showEmergencyCall: false,
     },
-    moderate: {
-      bg: isDark ? "#081410" : "#F8FFFE",
-      border: isDark ? "#064E3B" : "#99F6E4",
-      accent: "#0D9488",
-      accentDark: "#0F766E",
-      text: isDark ? "#5EEAD4" : "#134E4A",
-      subtle: isDark ? "#0A1F18" : "#F0FDF9",
-      label: "🟢",
+    low: {
+      accent: "var(--teal)",
+      bg: "var(--teal-light)",
+      border: "rgba(22, 165, 121, 0.3)",
+      dotColor: "var(--teal)",
+      label: isHi ? "सामान्य प्राथमिकता" : "LOW PRIORITY",
+      subLabel: isHi ? "स्व-देखभाल और प्राथमिक उपचार" : "Self-Care & Basic Support",
+      recommendedCategory: "pharmacies",
+      recommendedLabel: isHi ? "💊 पास की फार्मेसी / केमिस्ट" : "💊 Nearby Pharmacy & First Aid",
+      ctaText: isHi ? "पास की फार्मेसी खोजें" : "Find Nearby Pharmacy",
+      ctaIcon: "💊",
+      showEmergencyCall: false,
     },
   };
 
-  const c = severityConfig[result.severity] || severityConfig.moderate;
-
-  const voiceLocaleMap = {
-    en: "en-IN", hi: "hi-IN", ta: "ta-IN",
-    te: "te-IN", bn: "bn-IN", mr: "mr-IN",
-  };
+  const p = priorityConfig[priority] || priorityConfig.medium;
 
   function buildSpeechText() {
     const parts = [];
-    if (lang === "hi") {
-      parts.push(`आपातकाल की गंभीरता: ${result.severityLabel}.`);
+    if (isHi) {
+      parts.push(`आकलन: ${p.label}.`);
       parts.push(result.summary);
       if (result.doNow) parts.push(`अभी करें: ${result.doNow}`);
-      parts.push(`आवश्यक सुविधाएं: ${result.facilities?.join(", ")}.`);
+      parts.push(`अनुशंसित देखभाल: ${p.recommendedLabel}.`);
     } else {
-      parts.push(`Emergency severity: ${result.severityLabel}.`);
+      parts.push(`AI Assessment: ${p.label}.`);
       parts.push(result.summary);
       if (result.doNow) parts.push(`Do now: ${result.doNow}`);
-      parts.push(`Required facilities: ${result.facilities?.join(", ")}.`);
+      parts.push(`Recommended care: ${p.recommendedLabel}.`);
     }
     return parts.join(" ");
   }
@@ -81,9 +82,10 @@ export default function TriageResult({ result, lang }) {
       setIsSpeaking(false);
       return;
     }
+    const voiceLocaleMap = { en: "en-IN", hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN", mr: "mr-IN" };
     const utterance = new SpeechSynthesisUtterance(buildSpeechText());
     utterance.lang = voiceLocaleMap[lang] || "en-IN";
-    utterance.rate = 0.88;
+    utterance.rate = 0.9;
     const voices = window.speechSynthesis.getVoices();
     const match = voices.find((v) => v.lang.startsWith(voiceLocaleMap[lang]?.split("-")[0] || "en"));
     if (match) utterance.voice = match;
@@ -95,77 +97,86 @@ export default function TriageResult({ result, lang }) {
   }
 
   return (
-    <div className="fade-up" style={{
-      background: c.bg,
-      border: `1px solid ${c.border}`,
-      borderRadius: "var(--radius-lg)",
-      overflow: "hidden",
-      marginBottom: "1rem",
-      boxShadow: `0 0 0 1px ${c.border}40, var(--shadow-md)`,
-    }}>
-      {/* Header */}
-      <div style={{
-        display: "flex", alignItems: "center",
-        justifyContent: "space-between",
-        padding: "14px 18px",
-        borderBottom: `1px solid ${c.border}`,
-        background: c.subtle,
-      }}>
+    <div
+      className="fade-up"
+      style={{
+        background: "var(--bg-card)",
+        border: `1px solid var(--border)`,
+        borderLeft: `4px solid ${p.accent}`,
+        borderRadius: "var(--radius-lg)",
+        overflow: "hidden",
+        marginBottom: "1.5rem",
+        boxShadow: "var(--shadow-sm)",
+      }}
+    >
+      {/* Header Bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "12px 18px",
+          background: "var(--bg-secondary)",
+          borderBottom: "1px solid var(--border)",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div style={{
-            width: "10px", height: "10px", borderRadius: "50%",
-            background: c.accent,
-            boxShadow: `0 0 8px ${c.accent}80`,
-            animation: result.severity === "critical" ? "pulse 1.5s ease infinite" : "none",
-          }} />
-          <span style={{
-            fontSize: "14px", fontWeight: "700",
-            color: c.text, letterSpacing: "-0.02em",
-            fontFamily: "var(--font-display)",
-          }}>
-            {result.severityLabel}
+          <div
+            style={{
+              width: "9px",
+              height: "9px",
+              borderRadius: "50%",
+              background: p.dotColor,
+              boxShadow: `0 0 8px ${p.accent}`,
+            }}
+          />
+          <span
+            style={{
+              fontSize: "12px",
+              fontWeight: "800",
+              color: "var(--text-primary)",
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              fontFamily: "var(--font-mono)",
+            }}
+          >
+            AI ASSESSMENT · {p.label}
           </span>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{
-            fontSize: "10px", fontWeight: "600",
-            color: c.text, background: `${c.accent}15`,
-            padding: "3px 10px", borderRadius: "20px",
-            border: `1px solid ${c.border}`,
-            letterSpacing: "0.04em", textTransform: "uppercase",
-          }}>
-            AI Assessment
-          </span>
-
           {isSupported && (
             <button
               onClick={toggleSpeech}
               style={{
-                display: "flex", alignItems: "center", gap: "5px",
-                padding: "5px 12px",
-                background: isSpeaking ? c.accent : `${c.accent}15`,
-                border: `1px solid ${c.border}`,
-                borderRadius: "20px", cursor: "pointer",
-                color: isSpeaking ? "white" : c.text,
-                fontSize: "11px", fontWeight: "600",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "5px",
+                padding: "4px 10px",
+                background: isSpeaking ? p.accent : "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "20px",
+                cursor: "pointer",
+                color: isSpeaking ? "white" : "var(--text-secondary)",
+                fontSize: "11px",
+                fontWeight: "600",
                 transition: "all var(--transition)",
               }}
             >
               {isSpeaking ? (
                 <>
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
-                    <rect x="6" y="6" width="12" height="12" rx="2"/>
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="6" y="6" width="12" height="12" rx="2" />
                   </svg>
-                  {lang === "hi" ? "रोकें" : "Stop"}
+                  <span>{isHi ? "रोकें" : "Stop"}</span>
                 </>
               ) : (
                 <>
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
                   </svg>
-                  {lang === "hi" ? "सुनें" : "Listen"}
+                  <span>{isHi ? "सुनें" : "Listen"}</span>
                 </>
               )}
             </button>
@@ -173,127 +184,225 @@ export default function TriageResult({ result, lang }) {
         </div>
       </div>
 
-      {/* Body */}
-      <div style={{ padding: "16px 18px" }}>
-        <p style={{
-          fontSize: "14px", lineHeight: "1.7",
-          color: "var(--text-primary)",
-          marginBottom: "14px",
-          letterSpacing: "-0.01em",
-        }}>
+      {/* Main Content Body */}
+      <div style={{ padding: "18px 20px" }}>
+        {/* Assessment Summary */}
+        <p
+          style={{
+            fontSize: "14px",
+            lineHeight: "1.65",
+            color: "var(--text-primary)",
+            margin: "0 0 14px",
+            letterSpacing: "-0.01em",
+          }}
+        >
           {result.summary}
         </p>
 
-        {/* Do now */}
+        {/* Immediate First-Aid / "Do Now" Guidance */}
         {result.doNow && (
-          <div style={{
-            display: "flex", gap: "12px",
-            background: "var(--bg-card)",
-            border: `1px solid ${c.border}`,
-            borderLeft: `3px solid ${c.accent}`,
-            borderRadius: "var(--radius-md)",
-            padding: "12px 14px", marginBottom: "14px",
-          }}>
-            <div style={{
-              width: "28px", height: "28px", borderRadius: "8px",
-              background: `${c.accent}20`,
-              display: "flex", alignItems: "center",
-              justifyContent: "center", flexShrink: 0,
-            }}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                stroke={c.accent} strokeWidth="2.5">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              background: "var(--bg-secondary)",
+              border: "1px solid var(--border)",
+              borderLeft: `3px solid ${p.accent}`,
+              borderRadius: "var(--radius-md)",
+              padding: "12px 14px",
+              marginBottom: "14px",
+            }}
+          >
+            <div
+              style={{
+                width: "26px",
+                height: "26px",
+                borderRadius: "7px",
+                background: `${p.accent}18`,
+                color: p.accent,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                fontSize: "13px",
+                fontWeight: "700",
+              }}
+            >
+              ✓
             </div>
             <div>
-              <div style={{
-                fontSize: "10px", fontWeight: "700",
-                color: c.text, marginBottom: "4px",
-                letterSpacing: "0.06em", textTransform: "uppercase",
-              }}>
-                {s.doNowLabel}
+              <div
+                style={{
+                  fontSize: "10px",
+                  fontWeight: "800",
+                  color: "var(--text-tertiary)",
+                  marginBottom: "3px",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                {s.doNowLabel || (isHi ? "अभी करें" : "Do now")}
               </div>
-              <div style={{
-                fontSize: "13px", lineHeight: "1.6",
-                color: "var(--text-primary)",
-              }}>
+              <div
+                style={{
+                  fontSize: "13px",
+                  lineHeight: "1.55",
+                  color: "var(--text-primary)",
+                  fontWeight: "500",
+                }}
+              >
                 {result.doNow}
               </div>
             </div>
           </div>
         )}
 
-        {/* Facilities */}
-        <div>
-          <div style={{
-            fontSize: "10px", fontWeight: "700",
+        {/* Recommended Care Highlight Box */}
+        <div
+          style={{
+            background: "var(--bg-secondary)",
+            border: "1px solid var(--border)",
+            borderRadius: "var(--radius-md)",
+            padding: "12px 16px",
+            marginBottom: "16px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "10px",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: "10px",
+                fontWeight: "700",
+                color: "var(--text-tertiary)",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                marginBottom: "2px",
+              }}
+            >
+              {isHi ? "अनुशंसित देखभाल का प्रकार" : "RECOMMENDED CARE"}
+            </div>
+            <div
+              style={{
+                fontSize: "15px",
+                fontWeight: "700",
+                color: "var(--text-primary)",
+                letterSpacing: "-0.01em",
+              }}
+            >
+              {result.recommendedCareLabel || p.recommendedLabel}
+            </div>
+          </div>
+
+          {/* Action CTAs inside panel */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            {/* Primary Action to trigger location & nearby care */}
+            <button
+              onClick={() => onFindCare(result.recommendedCareCategory || p.recommendedCategory)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "7px",
+                padding: "9px 18px",
+                background: "var(--teal)",
+                color: "white",
+                border: "none",
+                borderRadius: "var(--radius-sm)",
+                fontSize: "13px",
+                fontWeight: "700",
+                cursor: "pointer",
+                boxShadow: "0 2px 8px rgba(22, 165, 121, 0.25)",
+                transition: "all var(--transition)",
+                letterSpacing: "-0.01em",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.background = "var(--teal-mid)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.background = "var(--teal)";
+              }}
+            >
+              <span>{result.primaryCta || p.ctaText}</span>
+              <span style={{ fontSize: "14px" }}>→</span>
+            </button>
+
+            {/* High priority secondary emergency call action */}
+            {p.showEmergencyCall && (
+              <a
+                href="tel:112"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  padding: "9px 14px",
+                  background: "var(--alert)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "13px",
+                  fontWeight: "700",
+                  textDecoration: "none",
+                  boxShadow: "0 2px 8px rgba(225, 29, 72, 0.25)",
+                  letterSpacing: "-0.01em",
+                }}
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                </svg>
+                <span>{isHi ? "112 पर कॉल करें" : "Call 112"}</span>
+              </a>
+            )}
+
+            {/* Low priority link to first aid */}
+            {priority === "low" && onNavigateFirstAid && (
+              <button
+                onClick={onNavigateFirstAid}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  padding: "8px 12px",
+                  background: "transparent",
+                  color: "var(--text-secondary)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--radius-sm)",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  cursor: "pointer",
+                }}
+              >
+                <span>📖 {isHi ? "प्राथमिक उपचार गाइड" : "First Aid Guide"}</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Subtle Medical Disclaimer */}
+        <div
+          style={{
+            fontSize: "11px",
             color: "var(--text-tertiary)",
-            textTransform: "uppercase", letterSpacing: "0.1em",
-            marginBottom: "8px",
-          }}>
-            {s.facilitiesNeeded}
-          </div>
-          <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-            {result.facilities.map((f) => (
-              <span key={f} style={{
-                padding: "4px 12px",
-                background: `${c.accent}12`,
-                border: `1px solid ${c.border}`,
-                borderRadius: "6px",
-                fontSize: "11px", fontWeight: "700",
-                color: c.text,
-                fontFamily: "var(--font-mono)",
-                letterSpacing: "0.04em",
-              }}>
-                {f}
-              </span>
-            ))}
-          </div>
+            lineHeight: "1.5",
+            paddingTop: "6px",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "6px",
+          }}
+        >
+          <span style={{ color: "var(--text-secondary)", fontWeight: "600" }}>ℹ</span>
+          <span>
+            {isHi
+              ? "यह मार्गदर्शन केवल सूचनात्मक है और पेशेवर चिकित्सा सलाह का स्थान नहीं लेता है। यदि आपको तत्काल आपात स्थिति लगती है, तो 112 पर कॉल करें।"
+              : "This guidance is informational and does not replace professional medical advice. If you believe there is an immediate emergency, call 112."}
+          </span>
         </div>
       </div>
-
-      {/* Speaking indicator */}
-      {isSpeaking && (
-        <div style={{
-          padding: "10px 18px",
-          borderTop: `1px solid ${c.border}`,
-          background: c.subtle,
-          display: "flex", alignItems: "center", gap: "10px",
-        }}>
-          <div style={{ display: "flex", gap: "3px", alignItems: "center" }}>
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} style={{
-                width: "3px", background: c.accent,
-                borderRadius: "2px",
-                animation: `soundWave 0.8s ease-in-out ${i * 0.1}s infinite alternate`,
-                height: `${6 + i * 3}px`,
-              }} />
-            ))}
-          </div>
-          <span style={{
-            fontSize: "11px", fontWeight: "600",
-            color: c.text,
-          }}>
-            {lang === "hi" ? "पढ़ा जा रहा है..." : "Reading aloud..."}
-          </span>
-          <button onClick={toggleSpeech} style={{
-            marginLeft: "auto", fontSize: "11px", fontWeight: "600",
-            color: c.text, background: "none",
-            border: "none", cursor: "pointer",
-            textDecoration: "underline",
-          }}>
-            {lang === "hi" ? "रोकें" : "Stop"}
-          </button>
-        </div>
-      )}
-
-      <style>{`
-        @keyframes soundWave {
-          from { transform: scaleY(0.4); }
-          to { transform: scaleY(1.2); }
-        }
-      `}</style>
     </div>
   );
 }

@@ -209,23 +209,25 @@ export default function HospitalMap({ hospitals, userLocation, lang, ambulanceLo
                     }}>
                       {hospital.distanceKm} km {lang === "hi" ? "दूर" : "away"}
                     </div>
-                    <div style={{
-                      display: "flex", gap: "3px",
-                      flexWrap: "wrap", marginBottom: "8px",
-                    }}>
-                      {hospital.facilities.slice(0, 3).map((f) => (
-                        <span key={f} style={{
-                          padding: "2px 6px",
-                          background: "#EEF2F7",
-                          color: "#4A5568",
-                          borderRadius: "4px", fontSize: "10px",
-                          fontWeight: "600",
-                          fontFamily: "monospace",
-                        }}>
-                          {f}
-                        </span>
-                      ))}
-                    </div>
+                    {Array.isArray(hospital.facilities) && hospital.facilities.length > 0 && (
+                      <div style={{
+                        display: "flex", gap: "3px",
+                        flexWrap: "wrap", marginBottom: "8px",
+                      }}>
+                        {hospital.facilities.slice(0, 3).map((f) => (
+                          <span key={f} style={{
+                            padding: "2px 6px",
+                            background: "#EEF2F7",
+                            color: "#4A5568",
+                            borderRadius: "4px", fontSize: "10px",
+                            fontWeight: "600",
+                            fontFamily: "monospace",
+                          }}>
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     {hospital.phone && (
                       <a href={`tel:${hospital.phone}`} style={{
                         display: "flex", alignItems: "center",
@@ -246,9 +248,8 @@ export default function HospitalMap({ hospitals, userLocation, lang, ambulanceLo
               </Marker>
             ); 
           })}
-        </MapContainer>
-      </div>
-{/* Ambulance marker */}
+
+          {/* Ambulance marker */}
           {ambulanceLocation && (
             <Marker
               position={[ambulanceLocation.lat, ambulanceLocation.lng]}
@@ -264,6 +265,8 @@ export default function HospitalMap({ hospitals, userLocation, lang, ambulanceLo
               </Popup>
             </Marker>
           )}
+        </MapContainer>
+      </div>
       {/* Footer note */}
       <div style={{
         display: "flex", justifyContent: "space-between",
